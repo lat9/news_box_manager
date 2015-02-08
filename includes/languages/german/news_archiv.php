@@ -1,31 +1,15 @@
 <?php
+// -----
+// Part of the News Box Manager plugin, re-structured for Zen Cart v1.5.1 and later by lat9.
+// Copyright (C) 2015, Vinos de Frutas Tropicales
 //
-// +----------------------------------------------------------------------+
-// |zen-cart Open Source E-commerce                                       |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2003 The zen-cart developers                           |
-// |                                                                      |
-// | http://www.zen-cart.com/index.php                                    |
-// |                                                                      |
-// | Portions Copyright (c) 2003 osCommerce                               |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license,       |
-// | that is bundled with this package in the file LICENSE, and is        |
-// | available through the world-wide-web at the following url:           |
-// | http://www.zen-cart.com/license/2_0.txt.                             |
-// | If you did not receive a copy of the zen-cart license and are unable |
-// | to obtain it through the world-wide-web, please send a note to       |
-// | license@zen-cart.com so we can mail you a copy immediately.          |
 // +----------------------------------------------------------------------+
 // | Do Not Remove: Coded for Zen-Cart by geeks4u.com                     |
-// | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes		  |
+// | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
-// $Id: more_news.php,v 1.2 2004/08/26
 //
-
 define('NAVBAR_TITLE', 'News Archiv');
 define('HEADING_TITLE', 'News Archiv');
 define('NEWS_ARCHIVE_HEADING_TITLE', 'News Titel');
-define('NEWS_ARCHIV_HEADING_START_DATE', 'Veröffentlicht am');
+define('NEWS_ARCHIV_HEADING_START_DATE', 'VerÃ¶ffentlicht am');
 define('TEXT_NO_NEWS_FOR_LANGUAGE', 'Es gibt momentan keine News.');
-?>
