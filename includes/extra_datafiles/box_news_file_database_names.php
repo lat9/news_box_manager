@@ -8,6 +8,7 @@
 // | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
 //
-define('BOX_HEADING_SCROLL_BOX', 'Letzte News');
-define('TEXT_LINK_MORE', 'Mehr &hellip;');
-define('TEXT_TRAIL_STR', '&hellip;');
+define('TABLE_BOX_NEWS', DB_PREFIX . 'box_news');
+define('TABLE_BOX_NEWS_CONTENT', DB_PREFIX . 'box_news_content');
+
+define('FILENAME_MORE_NEWS', 'more_news');
