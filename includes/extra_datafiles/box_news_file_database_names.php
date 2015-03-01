@@ -12,3 +12,4 @@ define('TABLE_BOX_NEWS', DB_PREFIX . 'box_news');
 define('TABLE_BOX_NEWS_CONTENT', DB_PREFIX . 'box_news_content');
 
 define('FILENAME_MORE_NEWS', 'more_news');
+define('FILENAME_NEWS_ARCHIVE', 'news_archive');
