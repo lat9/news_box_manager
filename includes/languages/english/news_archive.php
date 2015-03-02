@@ -8,7 +8,9 @@
 // | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
 //
-define ('BOX_HEADING_SCROLL_BOX', 'Latest News');
-define ('TEXT_LINK_MORE', 'More &hellip;');
-define ('TEXT_TRAIL_STR', '&hellip;');
-define ('TEXT_ALL_NEWS', 'View All News');
+define('NAVBAR_TITLE', 'News Archive');
+define('HEADING_TITLE', 'News Archive');
+
+define('TEXT_NO_NEWS_CURRENTLY', 'We currently have no articles published.  Check back soon!');
+
+define('TEXT_DISPLAY_NUMBER_OF_NEWS_ARTICLES', 'Displaying <strong>%d</strong> to <strong>%d</strong> (of <strong>%d</strong> news articles)'); 

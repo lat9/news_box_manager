@@ -1,43 +1,40 @@
 <?php
+// -----
+// Part of the News Box Manager plugin, re-structured for Zen Cart v1.5.1 and later by lat9.
+// Copyright (C) 2015, Vinos de Frutas Tropicales
 //
-// +----------------------------------------------------------------------+
-// |zen-cart Open Source E-commerce                                       |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2003 The zen-cart developers                           |
-// |                                                                      |
-// | http://www.zen-cart.com/index.php                                    |
-// |                                                                      |
-// | Portions Copyright (c) 2003 osCommerce                               |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license,       |
-// | that is bundled with this package in the file LICENSE, and is        |
-// | available through the world-wide-web at the following url:           |
-// | http://www.zen-cart.com/license/2_0.txt.                             |
-// | If you did not receive a copy of the zen-cart license and are unable |
-// | to obtain it through the world-wide-web, please send a note to       |
-// | license@zen-cart.com so we can mail you a copy immediately.          |
 // +----------------------------------------------------------------------+
 // | Do Not Remove: Coded for Zen-Cart by geeks4u.com                     |
-// | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes		  |
+// | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
-// $Id: header_php.php,v 1.2 2004/08/26
 //
+$_SESSION['navigation']->remove_current_page();
 
-  $_SESSION['navigation']->remove_current_page();
+require(DIR_WS_MODULES . zen_get_module_directory ('require_languages.php'));
+$breadcrumb->add (NAVBAR_TITLE);
 
-// determine language or template language file
-  if (file_exists($language_page_directory . $template_dir . '/' . $current_page_base . '.php')) {
-    $template_dir_select = $template_dir . '/';
-  } else {
-    $template_dir_select = '';
+$news_id = (isset ($_GET['news_id'])) ? (int)zen_db_prepare_input ($_GET['news_id']) : 0;
+$languages_id = (int)zen_db_prepare_input ($_SESSION['languages_id']);
+$news_box_query = $db->Execute ("SELECT nc.news_title, nc.news_content, n.news_start_date, n.news_end_date
+                                   FROM " . TABLE_BOX_NEWS_CONTENT . " nc, " . TABLE_BOX_NEWS . " n 
+                                  WHERE nc.box_news_id = $news_id 
+                                    AND n.box_news_id = nc.box_news_id 
+                                    AND nc.languages_id = $languages_id 
+                                    AND n.news_status = 1 
+                                    AND now() >= n.news_start_date
+                                    AND ( n.news_end_date = '0000-00-00 00:00:00' OR now() <= n.news_end_date) LIMIT 1");
+if ($news_box_query->EOF) {
+  $news_title = '';
+  $news_content = '';
+  $start_date = false;
+  
+} else {
+  $news_title = nl2br ($news_box_query->fields['news_title']);
+  $news_content = nl2br ($news_box_query->fields['news_content']);
+  $start_date = (NEWS_BOX_DATE_FORMAT == 'short') ? zen_date_short ($news_box_query->fields['news_start_date']) : zen_date_long ($news_box_query->fields['news_start_date']);
+  if ($news_box_query->fields['news_end_date'] != '0000-00-00 00:00:00') {
+    $end_date = (NEWS_BOX_DATE_FORMAT == 'short') ? zen_date_short ($news_box_query->fields['news_start_date']) : zen_date_long ($news_box_query->fields['news_start_date']);
+    
   }
-
-// set language or template language file
-  $directory_array = $template->get_template_part($language_page_directory . $template_dir_select, '/^'.$current_page_base . '/');
-
-// load language or template language file
-  while(list ($key, $value) = each($directory_array)) {
-    require($language_page_directory . $template_dir_select . $value);
-  }
-    $breadcrumb->add(NAVBAR_TITLE);
-?>
+  
+}

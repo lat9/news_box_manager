@@ -8,23 +8,22 @@
 // | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
 //
-$languages_id = zen_db_prepare_input((int)$_SESSION['languages_id']);
-$news_box_query = $db->Execute("SELECT nc.news_title, nc.news_content
-                                  FROM " . TABLE_BOX_NEWS_CONTENT . " nc, " . TABLE_BOX_NEWS . " n
-                                 WHERE n.box_news_id = nc.box_news_id AND nc.languages_id = $languages_id AND n.news_status = 1 AND now() BETWEEN n.news_start_date AND n.news_end_date");
-while (!$news_box_query->EOF) {
-  if (zen_not_null ($news_box_query->fields['news_title']) || zen_not_null ($news_box_query->fields['news_content'])){
-    require $template->get_template_dir ('tpl_news_scroll_box.php', DIR_WS_TEMPLATE, $current_page_base,'sideboxes') . '/tpl_news_scroll_box.php';
+$languages_id = zen_db_prepare_input ((int)$_SESSION['languages_id']);
+$news_box_query = $db->Execute ("SELECT nc.news_title, nc.news_content, n.*
+                                   FROM " . TABLE_BOX_NEWS_CONTENT . " nc, " . TABLE_BOX_NEWS . " n
+                                  WHERE n.box_news_id = nc.box_news_id 
+                                    AND nc.languages_id = $languages_id 
+                                    AND n.news_status = 1 
+                                    AND now() >= n.news_start_date
+                                    AND ( n.news_end_date = '0000-00-00 00:00:00' OR now() <= n.news_end_date)
+                               ORDER BY n.news_start_date DESC, n.box_news_id DESC
+                                  LIMIT " . (int)NEWS_BOX_SHOW_NEWS);
+if (!$news_box_query->EOF) {
+  require $template->get_template_dir ('tpl_news_scroll_box.php', DIR_WS_TEMPLATE, $current_page_base, 'sideboxes') . '/tpl_news_scroll_box.php';
 
-    $title = BOX_HEADING_SCROLL_BOX;
-    $left_corner = false;
-    $right_corner = false;
-    $right_arrow = false;
-    $title_link = false;
+  $title = BOX_HEADING_NEWS_BOX;
+  $title_link = FILENAME_NEWS_ARCHIVE;
 
-    require $template->get_template_dir ($column_box_default, DIR_WS_TEMPLATE, $current_page_base,'common') . '/' . $column_box_default;
-    break;
-  }
-  $news_box_query->MoveNext();
+  require $template->get_template_dir ($column_box_default, DIR_WS_TEMPLATE, $current_page_base, 'common') . '/' . $column_box_default;
 
 }

@@ -8,8 +8,14 @@
 // | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
 //
-define ('NAVBAR_TITLE', 'News');
-define ('HEADING_TITLE', 'News: ');
-define ('TEXT_NEWS_PUBLISHED_DATE', 'Published:');
-define ('TEXT_NEWS_END_DATE', 'Expires:');
-define ('TEXT_NEWS_ARTICLE_NOT_FOUND', 'This news article is no longer available for viewing.');
+define ('BOX_HEADING_NEWS_BOX', 'Latest News');
+define ('TEXT_LINK_MORE', 'More &hellip;');
+define ('TEXT_TRAIL_STR', '&hellip;');
+define ('TEXT_ALL_NEWS', 'View All News');
+
+define ('NEWS_DATE_SEPARATOR', ' - ');
+
+define ('NEWS_BOX_HEADING_TITLE', 'Article Title');
+define ('NEWS_BOX_HEADING_DATES', 'Article Date(s)');
+
+define ('TEXT_NEWS_BOX_INFO', 'Click an article\'s title to view its content.');
