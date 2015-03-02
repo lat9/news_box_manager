@@ -45,7 +45,6 @@ switch ($action) {
     $news_content = zen_db_prepare_input ($_POST['news_content']);
     $news_start_date = ($_POST['news_start_date'] == '') ? 'now()' : zen_db_prepare_input ($_POST['news_start_date']);
     $news_end_date = ($_POST['news_end_date'] == '') ? 'NULL' : zen_db_prepare_input ($_POST['news_end_date']);
-    $more_news_page = (isset ($_POST['more_news_page'])) ? 1 : 0;
     if (isset ($_POST['box_news_id'])) {
       $box_news_id = zen_db_prepare_input ($_POST['box_news_id']);
       
@@ -73,7 +72,7 @@ switch ($action) {
     } else {
       $sql_data_array = array ('news_start_date' => $news_start_date,
                                'news_end_date' => $news_end_date,
-                               'more_news_page' => $more_news_page
+
                               );
 
       if ($action == 'insert') {
@@ -201,13 +200,12 @@ if ($action == 'new') {
                         'news_added_date' => '',
                         'news_modified_date' => '',
                         'news_start_date' => '',
-                        'news_end_date' => '',
-                        'more_news_page' => '');
+                        'news_end_date' => '');
   $nInfo = new objectInfo ($parameters);
   if (isset ($_GET['nID']) || isset ($_POST['nID'])) {
     $form_action = 'update';
     $nID = (int)(isset ($_POST['nID'])) ? $_POST['nID'] : ((isset ($_GET['nID'])) ? $_GET['nID'] : 0);
-    $news = $db->Execute ("SELECT nc.news_title, nc.news_content, n.more_news_page, date_format(n.news_added_date, '%Y-%m-%d') as news_added_date, date_format(n.news_modified_date, '%Y-%m-%d') as news_modified_date,       date_format(n.news_start_date, '%Y-%m-%d') as news_start_date, date_format(n.news_end_date, '%Y-%m-%d') as news_end_date
+    $news = $db->Execute ("SELECT nc.news_title, nc.news_content, date_format(n.news_added_date, '%Y-%m-%d') as news_added_date, date_format(n.news_modified_date, '%Y-%m-%d') as news_modified_date,       date_format(n.news_start_date, '%Y-%m-%d') as news_start_date, date_format(n.news_end_date, '%Y-%m-%d') as news_end_date
                              FROM " . TABLE_BOX_NEWS_CONTENT . " nc, " . TABLE_BOX_NEWS . " n 
                             WHERE n.box_news_id = $nID LIMIT 1");
     if (!$news->EOF) {
@@ -237,10 +235,6 @@ if ($action == 'new') {
           <table border="0" cellspacing="0" cellpadding="2">
             <tr>
               <td colspan="2"><?php echo zen_draw_separator ('pixel_trans.gif', '1', '10'); ?></td>
-            </tr>
-            <tr>
-              <td class="main"><?php echo TEXT_MORE_NEWS_PAGE; ?></td>
-              <td class="main"><?php echo zen_draw_separator ('pixel_trans.gif', '24', '15') . '&nbsp;' . zen_draw_checkbox_field ('more_news_page','1',$nInfo->more_news_page); ?></td>
             </tr>
             <tr>
               <td class="main"><?php echo TEXT_NEWS_START_DATE; ?><br /><small>(YYYY-MM-DD)</small></td>
@@ -310,11 +304,6 @@ if ($action == 'new') {
         </tr>
 <?php
 } elseif ($action == 'preview') {
-?>
-        <tr>
-          <td class="main" colspan="3" align="right"><?php echo '<a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $_GET['nID']) . $page_link . '">' . zen_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></td>
-        </tr>
-<?php
   $news_title = TEXT_NEWS_TITLE;
   foreach ($languages as $current_language){
 ?>
@@ -325,7 +314,9 @@ if ($action == 'new') {
           <td class="main" colspan="2"><?php echo zen_image (DIR_WS_CATALOG_LANGUAGES . $current_language['directory'] . '/images/' . $current_language['image'], $current_language['name']) . '&nbsp;' .  zen_get_news_title ($_GET['nID'], $current_language['id']); ?></td>
         </tr>
         <tr>
-          <td class="main" style="width:<?php echo BOX_WIDTH_LEFT ?>"></td><td class="main"><div style="height:100%; width:100%; overflow:visible; border:1px solid #ccc;"><?php echo nl2br (zen_get_news_title ($_GET['nID'], $current_language['id'])) . '<br /><br />' . nl2br (zen_get_news_content ($_GET['nID'], $curent_language['id'])); ?></div></td><td class="main" style="width:<?php echo BOX_WIDTH_LEFT ?>;"></td>
+          <td class="main" style="width:<?php echo BOX_WIDTH_LEFT; ?>;">&nbsp;</td>
+          <td class="main"><div style="height:100%; width:100%; overflow:visible; border:1px solid #ccc;"><?php echo nl2br (zen_get_news_title ($_GET['nID'], $current_language['id'])) . '<br /><br />' . nl2br (zen_get_news_content ($_GET['nID'], $current_language['id'])); ?></div></td>
+          <td class="main" style="width:<?php echo BOX_WIDTH_RIGHT; ?>;">&nbsp;</td>
         </tr>
 <?php
     $news_title = '&nbsp;';

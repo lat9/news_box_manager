@@ -40,10 +40,12 @@ if (!defined ('NEWS_BOX_MODULE_VERSION')) {
   $db->Execute ("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function ) VALUES ( 'Items to Show in Sidebox', 'NEWS_BOX_SHOW_NEWS', '10', 'Set the maximum number of the latest-news titles to show in the &quot;Latest News&quot; sidebox.', $cgi, 40, now(), NULL, NULL)");
    
   $db->Execute ("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function ) VALUES ( 'Items to Show in Home Page', 'NEWS_BOX_SHOW_CENTERBOX', '10', 'Set the maximum number of the latest-news titles to show in the &quot;Latest News&quot; section at the bottom of your home page.  Set the value to 0 to disable the news display.', $cgi, 45, now(), NULL, NULL)");
-    
+   
+  $db->Execute ("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function ) VALUES ( 'News Archive: Items to Display', 'NEWS_BOX_SHOW_ARCHIVE', '10', 'Set the maximum number of the latest-news titles to show on the split-page view of the &quot;News Archive&quot; page.', $cgi, 47, now(), NULL, NULL)");
+  
   $db->Execute ("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function ) VALUES ( 'News Archive: Date Format', 'NEWS_BOX_DATE_FORMAT', 'long', 'Choose the style of dates to be displayed for an article\'s start/end dates on the &quot;News Archive&quot; page.  Choose <em>short</em> to have dates displayed similar to <b>03/02/2015</b> or <em>long</em> to display the date like <b>Monday 02 March, 2015</b>.<br /><br />The date-related settings you have made in your primary language files are honoured using the built-in functions <code>zen_date_short</code> and <code>zen_date_long</code>, respectively.', $cgi, 50, now(), NULL, 'zen_cfg_select_option(array(\'short\', \'long\'),')");
   
-  define ('NEWS_BOX_MODULE_VERSION', POSM_CURRENT_VERSION);
+  define ('NEWS_BOX_MODULE_VERSION', NEWS_BOX_CURRENT_VERSION_DATE);
   
 }
 
@@ -65,7 +67,6 @@ $sql = "CREATE TABLE IF NOT EXISTS " . TABLE_BOX_NEWS . " (
   `news_start_date` datetime default NULL,
   `news_end_date` datetime default NULL,
   `news_status` tinyint(1) default '0',
-  `more_news_page` tinyint(1) default '0',
   PRIMARY KEY  (`box_news_id`)
 ) ENGINE=MyISAM";
 $db->Execute($sql);
