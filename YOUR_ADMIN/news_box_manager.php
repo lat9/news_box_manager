@@ -222,6 +222,10 @@ if ($action == 'new') {
   }
 ?>
         <tr>
+          <td><?php echo TEXT_EDIT_INSERT_INFO; ?></td>
+        </tr>
+        
+        <tr>
           <td><?php echo zen_draw_form('news', FILENAME_NEWS_BOX_MANAGER, 'action=' . $form_action . $page_link); if ($form_action == 'update') echo zen_draw_hidden_field ('box_news_id', $nID); ?>
             <div id="spiffycalendar" class="text"></div>
             <link rel="stylesheet" type="text/css" href="includes/javascript/spiffyCal/spiffyCal_v2_1.css">
@@ -335,7 +339,7 @@ if ($action == 'new') {
 } else {
 ?>
         <tr>
-          <td class="main" colspan="2"><?php echo sprintf (TEXT_NEWS_BOX_MANAGER_INFO, NEWS_BOX_CHAR_COUNT); ?></td>
+          <td class="main" colspan="2"><?php echo TEXT_NEWS_BOX_MANAGER_INFO; ?></td>
         </tr>
         
         <tr>

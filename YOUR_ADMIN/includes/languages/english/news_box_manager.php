@@ -19,7 +19,6 @@ define('TABLE_HEADING_ACTION', 'Action');
 
 define('TEXT_NEWS_TITLE', 'News Title:');
 define('TEXT_NEWS_CONTENT', 'News Content:');
-define('TEXT_MORE_NEWS_PAGE', 'Link to "News" page:');
 define('TEXT__NEWS_CONTENT', 'News Content:');
 
 define('TEXT_NEWS_DATE_ADDED', 'Date Added:');
@@ -36,4 +35,5 @@ define('SUCCESS_NEWS_ARTICLE_CHANGED', 'The news article has been %s.');
   define('NEWS_ARTICLE_CREATED', 'created');
 
 define('TEXT_DISPLAY_NUMBER_OF_NEWS', 'Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> news)');
-define('TEXT_NEWS_BOX_MANAGER_INFO', 'The News Box is set to display up to <b>%s</b> bytes (characters) not including HTML tags before link to "News" page is automatically shown. That value can be configured in <em>Configuration-&gt;News Box Manager</em>. To edit or delete news entry, it needs to be in unpublished mode.');
+define('TEXT_NEWS_BOX_MANAGER_INFO', 'Use this tool to create news articles that are displayed in your store.  Refer to the settings in <em>Configuration-&gt;News Box Manager</em> for the various settings.<br /><br />A valid news article must have a non-blank &quot;News Title&quot; and &quot;News Content&quot; in at least one of your store\'s languages.');
+define('TEXT_EDIT_INSERT_INFO', 'If you leave the <em>Start Date</em> blank, its value will default to today.  Leave the <em>End Date</em> blank for a news article that never expires.');
