@@ -13,7 +13,6 @@ $_SESSION['navigation']->remove_current_page();
 require(DIR_WS_MODULES . zen_get_module_directory ('require_languages.php'));
 $breadcrumb->add (NAVBAR_TITLE);
 
-if (!defined ('NEWS_BOX_SHOW_ARCHIVE')) define ('NEWS_BOX_SHOW_ARCHIVE', 3);
 $max_news_items = NEWS_BOX_SHOW_ARCHIVE;
 $news_box_use_split = true;
 

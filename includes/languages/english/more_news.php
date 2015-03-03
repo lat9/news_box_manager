@@ -10,6 +10,6 @@
 //
 define ('NAVBAR_TITLE', 'News');
 define ('HEADING_TITLE', 'News: ');
-define ('TEXT_NEWS_PUBLISHED_DATE', 'Published:');
-define ('TEXT_NEWS_END_DATE', 'Expires:');
+define ('TEXT_NEWS_PUBLISHED_DATE', 'Article Date(s):');
+
 define ('TEXT_NEWS_ARTICLE_NOT_FOUND', 'This news article is no longer available for viewing.');

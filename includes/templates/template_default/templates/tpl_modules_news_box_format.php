@@ -16,7 +16,7 @@ if ($max_news_items > 0) {
   if (count ($news) > 0) {
 ?>
 <div class="centerBoxWrapper" id="newsBoxManager">
-  <h2 class="centerBoxHeading"><?php echo BOX_HEADING_NEWS_BOX; ?></h2>
+  <h2 class="centerBoxHeading"><?php echo BOX_HEADING_NEWS_BOX; ?> <a href="<?php echo zen_href_link (FILENAME_NEWS_ARCHIVE); ?>"><?php echo TEXT_ALL_NEWS; ?></a></h2>
   <div id="news-info"><?php echo TEXT_NEWS_BOX_INFO; ?></div>
   <div id="news-table">
     <div class="news-row news-heading">

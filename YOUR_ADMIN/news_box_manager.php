@@ -43,8 +43,8 @@ switch ($action) {
   case 'update': {
     $news_title = zen_db_prepare_input ($_POST['news_title']);
     $news_content = zen_db_prepare_input ($_POST['news_content']);
-    $news_start_date = ($_POST['news_start_date'] == '') ? 'now()' : zen_db_prepare_input ($_POST['news_start_date']);
-    $news_end_date = ($_POST['news_end_date'] == '') ? 'NULL' : zen_db_prepare_input ($_POST['news_end_date']);
+    $news_start_date = (($_POST['news_start_date'] == '') ? date ('Y-m-d') : zen_db_prepare_input ($_POST['news_start_date'])) . ' 00:00:00';
+    $news_end_date = ($_POST['news_end_date'] == '') ? 'NULL' : (zen_db_prepare_input ($_POST['news_end_date']) . ' 23:59:59');
     if (isset ($_POST['box_news_id'])) {
       $box_news_id = zen_db_prepare_input ($_POST['box_news_id']);
       
@@ -370,7 +370,7 @@ if ($action == 'new') {
      
     }
     $start_date_class = ($news->fields['news_start_date'] <= date('Y-m-d')) ? 'green' : 'red';
-    $end_date_class = ($news->fields['news_end_date'] == '0000-00-00' || $news->fields['news_end_date'] > date ('Y-m-d')) ? 'green' : 'red';
+    $end_date_class = ($news->fields['news_end_date'] == '0000-00-00' || $news->fields['news_end_date'] >= date ('Y-m-d')) ? 'green' : 'red';
     $news_end_date = ($news->fields['news_end_date'] == '0000-00-00') ? TEXT_NONE : zen_date_short ($news->fields['news_end_date']);
 ?>
                   <td class="dataTableContent"><?php echo '<a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $news->fields['box_news_id'] . '&action=preview' . $page_link) . '">' . zen_image (DIR_WS_ICONS . 'preview.gif', ICON_PREVIEW) . '</a>&nbsp;' . $news->fields['news_title']; ?></td>

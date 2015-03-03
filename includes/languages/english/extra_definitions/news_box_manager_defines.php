@@ -11,7 +11,7 @@
 define ('BOX_HEADING_NEWS_BOX', 'Latest News');
 define ('TEXT_LINK_MORE', 'More &hellip;');
 define ('TEXT_TRAIL_STR', '&hellip;');
-define ('TEXT_ALL_NEWS', 'View All News');
+define ('TEXT_ALL_NEWS', '[View All]');
 
 define ('NEWS_DATE_SEPARATOR', ' - ');
 
