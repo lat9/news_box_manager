@@ -8,7 +8,7 @@ if (!defined('IS_ADMIN_FLAG')) {
 }
 
 define('NEWS_BOX_CURRENT_VERSION', '2.0.0');
-define('NEWS_BOX_CURRENT_UPDATE_DATE', '2015-03-xx');
+define('NEWS_BOX_CURRENT_UPDATE_DATE', '2015-03-03');
 define('NEWS_BOX_CURRENT_VERSION_DATE', NEWS_BOX_CURRENT_VERSION . ' (' . NEWS_BOX_CURRENT_UPDATE_DATE . ')');
 
 function init_nbm_next_sort ($menu_key) {
