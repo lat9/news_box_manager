@@ -29,7 +29,24 @@ img { margin-left: 20px; max-width: 95%; }
 
 <hr />
 <h2>Purpose</h2>
-<p>This plugin adds a <em>Latest News</em> side-box and home-page center-box with an admin-level news editor to your Zen Cart.  The news articles that you create using <em>Localization-&gt;News Box Manager</em> ...</p>
+<p>This plugin adds a <em>Latest News</em> side-box and home-page center-box with an admin-level news editor to your Zen Cart. You create news articles using the tool <em>Localization-&gt;News Box Manager</em>, which are displayed in the side- and center-boxes (based on your chosen configuration).</p>
+<p>The news articles you write have a <em>Start Date</em> and <em>End Date</em> (which can be set to &quot;--none--&quot;), which determine whether or not the article is displayed to your customers.  Articles are displayed if the article's status is <em>Enabled</em>, the <em>Start Date</em> is on or after the current date and the <em>End Date</em> is either &quot;--none--&quot; or on or before the current date.  That way, you can write an article today that isn't displayed to your customers until sometime next week.</p>
+
+<h3>Admin Interfaces</h3>
+<p>Once you have copied the admin-level files to your cart's file system, you will see two new menu items:</p>
+<ol>
+  <li><em>Configuration-&gt;News Box Manager</em>, where you control the plugin's settings.</li>
+  <li><em>Localization-&gt;News Box Manager</em>, where you write and manage your store's news articles.  If you have an HTML editor installed in your admin, you can use that editor to edit/create your news articles.  If you have multiple languages in your store, you can write language-specific articles, too.</li>
+</ol>
+
+<h3>Customer Interfaces</h3>
+<p>On your store-side, once you have installed and enabled the plugin there are various new elements to be shown to your customers:</p>
+<ol>
+  <li>The <em>Latest News</em> sidebox.  Displays the titles of the most-recent news articles, if enabled by your admin's <em>Tools-&gt;Layout Box Controller</em>.</li>
+  <li>The <em>Latest News</em> centerbox on your home page.  Displays the release date and title of the most-recent news articles, if enabled by the setting in <em>Configuration-&gt;News Box Manager</em>.</li>
+  <li>The <em>News Archive</em> page.  Displays the full list of active news articles.</li>
+  <li>The <em>More News</em> page.  Displays the contents of a selected news article.</li>
+</ol>
 
 <hr />
 <h2>Installation</h2>
