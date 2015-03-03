@@ -6,28 +6,6 @@ I have updated this contribution, corrected the sql to work with the patch tool 
 bugs as well as correct the code so it will now work with Register Globals off.
 
 
-Installation instructions:
-
-1) Expand the zip locally and go though the sub-directories named YOUR_TEMPLATE and rename
-these directories to match the override diretory name in your particular installation. There are 4 
-such directories so make sure you change them all or this contribution will fail to function.
-
-2) Copy all of the files into your ZC installation. There are only additions, no files will be
-replaced.
-
-3) Paste the SQL into the Patch tool and execute it.
-
-4) Paste the css additions to your stylesheet.css
-
-5) Go to the News Box admin tool under Tools->News Box Manger to enter your stories and they will 
-appear as soon as you select the option to publish them.
-
-
-Known Caveats:
-
-The javascript output has a few minor xhtml errors, perhaps someone with more javascript experience 
-than I can suggest a fix here!
-
 Enjoy!
 
 Jeff Dripps
@@ -47,73 +25,3 @@ As you have noticed I dedicated this release to someone from our family that tra
 As always your feedback is welcomed. Please post it on ZC website in Support Forum/Contributions/News Box Manager.
 Furthermore I promise you that any donations will not be rejected. You can send them via PayPal to geeks4u_donations@netideas.org
 Enjoy.
-
- 
-Files to be added:
-__________________
-Zen_Cart\admin\news_box_manager.php
-Zen_Cart\admin\includes\boxes\extra_boxes\news_box_manager_tools_dhtml.php
-Zen_Cart\admin\includes\extra_datafiles\news_box_manager_filenames.php
-Zen_Cart\admin\includes\extra_datafiles\news_box_manager_database_names.php
-Zen_Cart\admin\includes\languages\english\extra_definitions\news_box_manager.php
-
-Zen_Cart\includes\extra_datafiles\box_news_database_tables.php
-Zen_Cart\includes\extra_datafiles\more_news_filenames.php
-Zen_Cart\includes\languages\english\YOUR_TEMPLATE\more_news.php
-Zen_Cart\includes\languages\english\extra_definitions\your_template\more_news_page_defines.php
-Zen_Cart\includes\languages\english\extra_definitions\your_template\news_scroll_box_defines.php
-Zen_Cart\includes\modules\sideboxes\YOUR_TEMPLATE\news_scroll_box.php
-Zen_Cart\includes\modules\pages\more_news\header_php.php
-Zen_Cart\includes\modules\pages\more_news\jscript_main.php
-Zen_Cart\includes\templates\YOUR_TEMPLATE\sideboxes\tpl_news_scroll_box.php
-Zen_Cart\includes\templates\YOUR_TEMPLATE\templates\tpl_more_news_default.php
-
-Images to be added:
-___________________
-Zen_Cart\admin\includes\languages\english\images\buttons\button_new_news.gif
-Zen_Cart\admin\includes\languages\english\images\buttons\button_publish.gif
-Zen_Cart\admin\includes\languages\english\images\buttons\button_unpublish.gif
-
-Db changes:
-___________
-Warning!!! This below will modify the zen_configuration table and add two new tables to the database.
-
-INSERT INTO `configuration` VALUES ('', 'News Box Character Count', 'NEWS_BOX_CHAR_COUNT', '200', 'Set the number of characters (bytes) that you want to display in the news preview box.', 19, 99, NULL, '2004-09-07 12:00:00', NULL, NULL);
-INSERT INTO `configuration` VALUES ('', 'News Box Width in px', 'NEWS_BOX_WIDTH', '140px', 'Set the width of News Box to fine tune how it displays your news.', 19, 99, NULL, '2004-09-07 12:00:00', NULL, NULL);
-INSERT INTO `configuration` VALUES ('', 'News Box Height in px', 'NEWS_BOX_HEIGHT', '160px', 'Set the height of News Box to fine tune how it displays your news.', 19, 99, NULL, '2004-09-07 12:00:00', NULL, NULL);
-INSERT INTO `configuration` VALUES ('', 'Number of Shown News', 'NEWS_BOX_SHOW_NEWS', '10', 'Set the number of Shown News', 19, 99, NULL, '2004-09-07 12:00:00', NULL, NULL);
-
-CREATE TABLE `box_news` (
-  `box_news_id` int(11) NOT NULL auto_increment,
-  `news_added_date` datetime NOT NULL default '0000-00-00 00:00:00',
-  `news_modified_date` datetime default NULL,
-  `news_start_date` datetime default NULL,
-  `news_end_date` datetime default NULL,
-  `news_published_date` datetime default NULL,
-  `news_status` tinyint(1) default '0',
-  `more_news_page` tinyint(1) default '0',
-  PRIMARY KEY  (`box_news_id`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
-
-CREATE TABLE `box_news_content` (
-  `box_news_id` int(11) NOT NULL default '0',
-  `languages_id` int(11) NOT NULL default '1',
-  `news_title` varchar(64) NOT NULL default '',
-  `news_content` text NOT NULL,
-  PRIMARY KEY  (`languages_id`,`box_news_id`)
-) TYPE=MyISAM;
-
-CSS changes:
-____________
-
-.newsInfo {
-  text-align: left;
-  font-style: normal;
-}
-
-.newsContent {
-font-size: 1.1em;
-}
-
-
-Finally log in to admin, enable it in Tools/Layout Boxes Controller and add some news, because the news Box Manager will not show when there are no news to display :)
