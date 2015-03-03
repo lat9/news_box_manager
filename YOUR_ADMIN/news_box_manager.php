@@ -134,6 +134,27 @@ switch ($action) {
     break;
     
   }
+  case 'set_editor': {
+    // Reset will be done by init_html_editor.php. Now we simply redirect to refresh page properly.
+    $params = '';
+    $separator = '';
+    if (isset ($_GET['nID'])) {
+      $params = 'nID=' . (int)$_GET['nID'];
+      $separator = '&';
+      
+    }
+    if (isset ($_GET['page'])) {
+      $params .= $separator . 'page=' . (int)$_GET['page'];
+      
+    }
+    zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, $params));
+    break;
+    
+  }
+  default: {
+    break;
+    
+  }
 }
 ?>
 <!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -340,6 +361,10 @@ if ($action == 'new') {
 ?>
         <tr>
           <td class="main" colspan="2"><?php echo TEXT_NEWS_BOX_MANAGER_INFO; ?></td>
+        </tr>
+        
+        <tr>
+          <td class="smallText" width="100%" align="right"><?php echo TEXT_EDITOR_INFO . zen_draw_form ('set_editor_form', FILENAME_NEWS_BOX_MANAGER, '', 'get') . '&nbsp;&nbsp;' . zen_draw_pull_down_menu ('reset_editor', $editors_pulldown, $current_editor_key, 'onchange="this.form.submit();"') . zen_hide_session_id() . ((isset ($_GET['nID'])) ? zen_draw_hidden_field ('nID', (int)$_GET['nID']) : '') . ((isset ($_GET['page'])) ? zen_draw_hidden_field ('page', $_GET['page']) : '') . zen_draw_hidden_field ('action', 'set_editor') . '</form>'; ?></td>
         </tr>
         
         <tr>
