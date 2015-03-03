@@ -20,16 +20,16 @@ if ($max_news_items > 0) {
   <div id="news-info"><?php echo TEXT_NEWS_BOX_INFO; ?></div>
   <div id="news-table">
     <div class="news-row news-heading">
-      <div class="news-col"><?php echo NEWS_BOX_HEADING_DATES; ?></div>
-      <div class="news-col"><?php echo NEWS_BOX_HEADING_TITLE; ?></div>
+      <div class="news-cell"><?php echo NEWS_BOX_HEADING_DATES; ?></div>
+      <div class="news-cell"><?php echo NEWS_BOX_HEADING_TITLE; ?></div>
     </div>
 <?php
     $row_class = 'rowEven';
     foreach ($news as $news_id => $news_item) {
 ?>
     <div class="news-row <?php echo $row_class; ?>">
-      <div class="news-col"><?php echo $news_item['start_date'] . ((isset ($news_item['end_date'])) ? ( NEWS_DATE_SEPARATOR . $news_item['end_date']) : ''); ?></div>
-      <div class="news-col"><a href="<?php echo zen_href_link (FILENAME_MORE_NEWS, 'news_id=' . $news_id); ?>"><?php echo $news_item['title']; ?></a></div>
+      <div class="news-cell"><?php echo $news_item['start_date'] . ((isset ($news_item['end_date'])) ? ( NEWS_DATE_SEPARATOR . $news_item['end_date']) : ''); ?></div>
+      <div class="news-cell"><a href="<?php echo zen_href_link (FILENAME_MORE_NEWS, 'news_id=' . $news_id); ?>"><?php echo $news_item['title']; ?></a></div>
     </div>
 <?php
       $row_class = ($row_class == 'rowEven') ? 'rowOdd' : 'rowEven';
