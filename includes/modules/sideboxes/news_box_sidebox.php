@@ -19,7 +19,7 @@ $news_box_query = $db->Execute ("SELECT nc.news_title, nc.news_content, n.*
                                ORDER BY n.news_start_date DESC, n.box_news_id DESC
                                   LIMIT " . (int)NEWS_BOX_SHOW_NEWS);
 if (!$news_box_query->EOF) {
-  require $template->get_template_dir ('tpl_news_scroll_box.php', DIR_WS_TEMPLATE, $current_page_base, 'sideboxes') . '/tpl_news_scroll_box.php';
+  require $template->get_template_dir ('tpl_news_box_sidebox.php', DIR_WS_TEMPLATE, $current_page_base, 'sideboxes') . '/tpl_news_box_sidebox.php';
 
   $title = BOX_HEADING_NEWS_BOX;
   $title_link = FILENAME_NEWS_ARCHIVE;
