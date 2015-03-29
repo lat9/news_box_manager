@@ -27,10 +27,15 @@ if (count ($news) == 0) {
 <?php
   $row_class = 'rowEven';
   foreach ($news as $news_id => $news_item) {
+    $news_content = '';
+    if (isset ($news_item['news_content'])) {
+      $news_content = ' <div class="news-content">' . $news_item['news_content'] . '</div>';
+      
+    }
 ?>
     <div class="news-row <?php echo $row_class; ?>">
       <div class="news-cell"><?php echo $news_item['start_date'] . ((isset ($news_item['end_date'])) ? ( NEWS_DATE_SEPARATOR . $news_item['end_date']) : ''); ?></div>
-      <div class="news-cell"><a href="<?php echo zen_href_link (FILENAME_MORE_NEWS, 'news_id=' . $news_id); ?>"><?php echo $news_item['title']; ?></a></div>
+      <div class="news-cell"><a href="<?php echo zen_href_link (FILENAME_MORE_NEWS, 'news_id=' . $news_id); ?>"><?php echo $news_item['title']; ?></a><?php echo $news_content; ?></div>
     </div>
 <?php
     $row_class = ($row_class == 'rowEven') ? 'rowOdd' : 'rowEven';

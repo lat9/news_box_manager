@@ -7,8 +7,8 @@ if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
 
-define('NEWS_BOX_CURRENT_VERSION', '2.0.0');
-define('NEWS_BOX_CURRENT_UPDATE_DATE', '2015-03-03');
+define('NEWS_BOX_CURRENT_VERSION', '2.1.0');
+define('NEWS_BOX_CURRENT_UPDATE_DATE', '2015-03-29');
 define('NEWS_BOX_CURRENT_VERSION_DATE', NEWS_BOX_CURRENT_VERSION . ' (' . NEWS_BOX_CURRENT_UPDATE_DATE . ')');
 
 function init_nbm_next_sort ($menu_key) {
@@ -48,11 +48,15 @@ if (!defined ('NEWS_BOX_MODULE_VERSION')) {
   define ('NEWS_BOX_MODULE_VERSION', NEWS_BOX_CURRENT_VERSION_DATE);
   
 }
+if (!defined ('NEWS_BOX_CONTENT_LENGTH')) {
+  $db->Execute ("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function ) VALUES ( 'Centerbox/Archive: News Content Length', 'NEWS_BOX_CONTENT_LENGTH', '0', 'Set the maximum number of characters (an integer value) of each article\'s content to display within the home-page center-box and the &quot;News Archive&quot; page.  Set the value to <em>0</em> to disable the content display or to <em>-1</em> to display each article\'s entire content (no HTML will be stripped).', $cgi, 48, now(), NULL, NULL)");
+  
+}
 
 // -----
 // Update the configuration table to reflect the current version, if it's not already set.
 //
-if (NEWS_BOX_MODULE_VERSION != NEWS_BOX_CURRENT_VERSION) {
+if (NEWS_BOX_MODULE_VERSION != NEWS_BOX_CURRENT_VERSION_DATE) {
   $db->Execute ("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '" . NEWS_BOX_CURRENT_VERSION_DATE . "' WHERE configuration_key = 'NEWS_BOX_MODULE_VERSION'");
   
 }
