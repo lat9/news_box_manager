@@ -18,4 +18,4 @@ define ('NEWS_DATE_SEPARATOR', ' - ');
 define ('NEWS_BOX_HEADING_TITLE', 'Article Title');
 define ('NEWS_BOX_HEADING_DATES', 'Article Date(s)');
 
-define ('TEXT_NEWS_BOX_INFO', 'Click an article\'s title to view its content.');
+define ('TEXT_NEWS_BOX_INFO', 'Click an article\'s title to view its content, or click the <em>View All</em> link above to see all the latest news from ' . STORE_NAME . '!');
