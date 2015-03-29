@@ -45,8 +45,8 @@ switch ($action) {
     $news_content = zen_db_prepare_input ($_POST['news_content']);
     $news_start_date = (($_POST['news_start_date'] == '') ? date ('Y-m-d') : zen_db_prepare_input ($_POST['news_start_date'])) . ' 00:00:00';
     $news_end_date = ($_POST['news_end_date'] == '') ? 'NULL' : (zen_db_prepare_input ($_POST['news_end_date']) . ' 23:59:59');
-    if (isset ($_POST['box_news_id'])) {
-      $box_news_id = zen_db_prepare_input ($_POST['box_news_id']);
+    if (isset ($_POST['nID'])) {
+      $nID = zen_db_prepare_input ($_POST['nID']);
       
     }
     
@@ -56,12 +56,12 @@ switch ($action) {
     $news_error = array ();
     foreach ($languages as $current_language) {
       $language_id = $current_language['id'];
-      if (!zen_not_null ($news_title[$language_id]) || !zen_not_null ($news_title[$language_id])) {
+      if (empty ($news_title[$language_id]) || empty ($news_content[$language_id])) {
         $news_error[$language_id] = true;
    
       }
     }
-    if (count ($news_error) == count ($languages)) {
+    if (count ($news_error) != 0 && count ($news_error) == count ($languages)) {
       $action = 'new';
       $messageStack->add (ERROR_NEWS_TITLE_CONTENT, 'error');
       
@@ -79,11 +79,11 @@ switch ($action) {
         $sql_data_array['news_added_date'] = 'now()';
         $sql_data_array['news_status'] = 0;
         zen_db_perform (TABLE_BOX_NEWS, $sql_data_array);
-        $box_news_id = zen_db_insert_id();
+        $nID = zen_db_insert_id();
          
       } else {
         $sql_data_array['news_modified_date'] = 'now()';
-        zen_db_perform (TABLE_BOX_NEWS, $sql_data_array, 'update', "box_news_id = '" . (int)$box_news_id . "'");
+        zen_db_perform (TABLE_BOX_NEWS, $sql_data_array, 'update', "box_news_id = '" . (int)$nID . "'");
          
       }
 
@@ -95,20 +95,20 @@ switch ($action) {
                                    'news_content' => zen_db_prepare_input ($news_content[$language_id]));
 
           if ($action == 'insert') {
-            $sql_data_array['box_news_id'] = $box_news_id;
+            $sql_data_array['box_news_id'] = $nID;
             $sql_data_array['languages_id'] = $language_id;
             zen_db_perform (TABLE_BOX_NEWS_CONTENT, $sql_data_array);
             $change_type = NEWS_ARTICLE_CREATED;
             
           } else {
-            zen_db_perform (TABLE_BOX_NEWS_CONTENT, $sql_data_array, 'update', "box_news_id = " . (int)$box_news_id . " AND languages_id = $language_id");
+            zen_db_perform (TABLE_BOX_NEWS_CONTENT, $sql_data_array, 'update', "box_news_id = " . (int)$nID . " AND languages_id = $language_id");
             $change_type = NEWS_ARTICLE_UPDATED;
             
           }
         }
       }
       $messageStack->add_session (sprintf (SUCCESS_NEWS_ARTICLE_CHANGED, $change_type), 'success');
-      zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, "nID=$box_news_id$page_link"));
+      zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, "nID=$nID$page_link"));
      
     }
     break;
@@ -247,7 +247,7 @@ if ($action == 'new') {
         </tr>
         
         <tr>
-          <td><?php echo zen_draw_form('news', FILENAME_NEWS_BOX_MANAGER, 'action=' . $form_action . $page_link); if ($form_action == 'update') echo zen_draw_hidden_field ('box_news_id', $nID); ?>
+          <td><?php echo zen_draw_form('news', FILENAME_NEWS_BOX_MANAGER, 'action=' . $form_action . $page_link); if ($form_action == 'update') echo zen_draw_hidden_field ('nID', $nID); ?>
             <div id="spiffycalendar" class="text"></div>
             <link rel="stylesheet" type="text/css" href="includes/javascript/spiffyCal/spiffyCal_v2_1.css">
             <script type="text/javascript" src="includes/javascript/spiffyCal/spiffyCal_v2_1.js"></script>
