@@ -9,6 +9,7 @@
 // +----------------------------------------------------------------------+
 //
 $max_news_items = (((int)$max_news_items) <= 0) ? 10 : $max_news_items;
+$news_box_content_length = (int)$news_box_content_length;
 
 $languages_id = (int)zen_db_prepare_input ($_SESSION['languages_id']);
 $news_box_query_raw = "SELECT n.box_news_id, nc.news_title, nc.news_content, n.news_start_date, n.news_end_date
@@ -36,12 +37,12 @@ while (!$news_info->EOF) {
       'start_date' => (NEWS_BOX_DATE_FORMAT == 'short') ? zen_date_short ($news_info->fields['news_start_date']) : zen_date_long ($news_info->fields['news_start_date']),
       
     );
-  if (((int)NEWS_BOX_CONTENT_LENGTH) != 0) {
-    if (((int)NEWS_BOX_CONTENT_LENGTH) == -1) {
+  if ($news_box_content_length != 0) {
+    if ($news_box_content_length == -1) {
       $news[$news_info->fields['box_news_id']]['news_content'] = $news_info->fields['news_content'];
       
-    } elseif (((int)NEWS_BOX_CONTENT_LENGTH) > 0) {
-      $news[$news_info->fields['box_news_id']]['news_content'] = zen_trunc_string (zen_clean_html ($news_info->fields['news_content']), (int)NEWS_BOX_CONTENT_LENGTH);
+    } elseif ($news_box_content_length > 0) {
+      $news[$news_info->fields['box_news_id']]['news_content'] = zen_trunc_string (zen_clean_html ($news_info->fields['news_content']), $news_box_content_length);
       
     }
   }

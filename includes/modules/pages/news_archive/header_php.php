@@ -14,6 +14,7 @@ require(DIR_WS_MODULES . zen_get_module_directory ('require_languages.php'));
 $breadcrumb->add (NAVBAR_TITLE);
 
 $max_news_items = NEWS_BOX_SHOW_ARCHIVE;
+$news_box_content_length = NEWS_BOX_CONTENT_LENGTH_ARCHIVE;
 $news_box_use_split = true;
 
 include (DIR_WS_MODULES . zen_get_module_directory (FILENAME_NEWS_BOX_FORMAT));

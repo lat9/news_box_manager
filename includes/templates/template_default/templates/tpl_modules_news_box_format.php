@@ -9,6 +9,7 @@
 // +----------------------------------------------------------------------+
 //
 $max_news_items = (int)NEWS_BOX_SHOW_CENTERBOX;
+$news_box_content_length = NEWS_BOX_CONTENT_LENGTH_CENTERBOX;
 if ($max_news_items > 0) {
   $news_box_use_split = false;
   include (DIR_WS_MODULES . zen_get_module_directory (FILENAME_NEWS_BOX_FORMAT));
