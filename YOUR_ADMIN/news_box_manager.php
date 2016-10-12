@@ -1,7 +1,7 @@
 <?php
 // -----
 // Part of the News Box Manager plugin, re-structured for Zen Cart v1.5.1 and later by lat9.
-// Copyright (C) 2015, Vinos de Frutas Tropicales
+// Copyright (C) 2015-2016, Vinos de Frutas Tropicales
 //
 // +----------------------------------------------------------------------+
 // | Do Not Remove: Coded for Zen-Cart by geeks4u.com                     |
@@ -41,12 +41,12 @@ $page_link = (isset ($_GET['page'])) ? ('&page=' . $_GET['page']) : '';
 switch ($action) {
   case 'insert':
   case 'update': {
-    $news_title = zen_db_prepare_input ($_POST['news_title']);
-    $news_content = zen_db_prepare_input ($_POST['news_content']);
+    $news_title = $_POST['news_title'];
+    $news_content = $_POST['news_content'];
     $news_start_date = (($_POST['news_start_date'] == '') ? date ('Y-m-d') : zen_db_prepare_input ($_POST['news_start_date'])) . ' 00:00:00';
     $news_end_date = ($_POST['news_end_date'] == '') ? 'NULL' : (zen_db_prepare_input ($_POST['news_end_date']) . ' 23:59:59');
     if (isset ($_POST['nID'])) {
-      $nID = zen_db_prepare_input ($_POST['nID']);
+      $nID = (int)$_POST['nID'];
       
     }
     
@@ -91,8 +91,8 @@ switch ($action) {
         $language_id = $current_language['id'];
         if (zen_not_null ($news_title[$language_id]) && zen_not_null ($news_content[$language_id])) {
           
-          $sql_data_array = array ('news_title' => zen_db_prepare_input ($news_title[$language_id]),
-                                   'news_content' => zen_db_prepare_input ($news_content[$language_id]));
+          $sql_data_array = array ('news_title' => $news_title[$language_id],
+                                   'news_content' => $news_content[$language_id]);
 
           if ($action == 'insert') {
             $sql_data_array['box_news_id'] = $nID;
@@ -115,7 +115,7 @@ switch ($action) {
     
   }
   case 'deleteconfirm':  {
-    $nID = (int)zen_db_prepare_input ($_GET['nID']);
+    $nID = (int)$_GET['nID'];
     $db->Execute ("DELETE FROM " . TABLE_BOX_NEWS . " WHERE box_news_id = $nID");
     $db->Execute ("DELETE FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = $nID");
     zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, (isset ($_GET['page']) ? ('page=' . $_GET['page']) : '')));
@@ -123,7 +123,7 @@ switch ($action) {
      
   }
   case 'status': {
-    $nID = (int)zen_db_prepare_input ($_GET['nID']);
+    $nID = (int)$_GET['nID'];
     $news = $db->Execute ("SELECT news_status FROM " . TABLE_BOX_NEWS . " WHERE box_news_id = $nID LIMIT 1");
     if (!$news->EOF) {
       $news_status = ($news->fields['news_status'] == 0) ? 1 : 0;
