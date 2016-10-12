@@ -8,28 +8,26 @@
 // | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
 //
-function zen_get_news_title ($box_news_id, $language_id = ''){
-  global $db;
-  if ($language_id == '') {
-    $language_id = $_SESSION['languages_id'];
-    
-  }
-  $news = $db->Execute ("SELECT news_title FROM " . TABLE_BOX_NEWS_CONTENT . "  WHERE box_news_id = " . (int)$box_news_id . " AND languages_id = " . (int)$language_id . " LIMIT 1");
+function zen_get_news_title ($box_news_id, $language_id = '')
+{
+    global $db;
+    if ($language_id == '') {
+        $language_id = $_SESSION['languages_id'];
+    }
+    $news = $db->Execute ("SELECT news_title FROM " . TABLE_BOX_NEWS_CONTENT . "  WHERE box_news_id = " . (int)$box_news_id . " AND languages_id = " . (int)$language_id . " LIMIT 1");
   
-  return ($news->EOF) ? '' : $news->fields['news_title'];
-  
+    return ($news->EOF) ? '' : $news->fields['news_title'];
 }
 
-function zen_get_news_content ($box_news_id, $language_id = ''){
-  global $db;
-  if ($language_id == '') {
-    $language_id = $_SESSION['languages_id'];
-    
-  }
-  $news = $db->Execute ("SELECT news_content FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = " . (int)$box_news_id . " AND languages_id = " . (int)$language_id . " LIMIT 1");
+function zen_get_news_content ($box_news_id, $language_id = '')
+{
+    global $db;
+    if ($language_id == '') {
+        $language_id = $_SESSION['languages_id'];
+    }
+    $news = $db->Execute ("SELECT news_content FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = " . (int)$box_news_id . " AND languages_id = " . (int)$language_id . " LIMIT 1");
   
-  return ($news->EOF) ? '' : $news->fields['news_content'];
-  
+    return ($news->EOF) ? '' : $news->fields['news_content'];
 }
 
 require('includes/application_top.php');
@@ -39,122 +37,106 @@ $languages = zen_get_languages ();
 $action = (isset ($_GET['action']) ? $_GET['action'] : '');
 $page_link = (isset ($_GET['page'])) ? ('&page=' . $_GET['page']) : '';
 switch ($action) {
-  case 'insert':
-  case 'update': {
-    $news_title = $_POST['news_title'];
-    $news_content = $_POST['news_content'];
-    $news_start_date = (($_POST['news_start_date'] == '') ? date ('Y-m-d') : zen_db_prepare_input ($_POST['news_start_date'])) . ' 00:00:00';
-    $news_end_date = ($_POST['news_end_date'] == '') ? 'NULL' : (zen_db_prepare_input ($_POST['news_end_date']) . ' 23:59:59');
-    if (isset ($_POST['nID'])) {
-      $nID = (int)$_POST['nID'];
-      
-    }
-    
-    // -----
-    // For the news article to be saved, it must have both a title and content ** IN AT LEAST ONE OF THE STORE'S LANGUAGES **
-    //
-    $news_error = array ();
-    foreach ($languages as $current_language) {
-      $language_id = $current_language['id'];
-      if (empty ($news_title[$language_id]) || empty ($news_content[$language_id])) {
-        $news_error[$language_id] = true;
-   
-      }
-    }
-    if (count ($news_error) != 0 && count ($news_error) == count ($languages)) {
-      $action = 'new';
-      $messageStack->add (ERROR_NEWS_TITLE_CONTENT, 'error');
-      
-    } elseif ($news_end_date != 'NULL' && $news_start_date > $news_end_date) {
-      $action = 'new';
-      $messageStack->add (ERROR_NEWS_DATE_ISSUES, 'error');
-      
-    } else {
-      $sql_data_array = array ('news_start_date' => $news_start_date,
-                               'news_end_date' => $news_end_date,
-
-                              );
-
-      if ($action == 'insert') {
-        $sql_data_array['news_added_date'] = 'now()';
-        $sql_data_array['news_status'] = 0;
-        zen_db_perform (TABLE_BOX_NEWS, $sql_data_array);
-        $nID = zen_db_insert_id();
-         
-      } else {
-        $sql_data_array['news_modified_date'] = 'now()';
-        zen_db_perform (TABLE_BOX_NEWS, $sql_data_array, 'update', "box_news_id = '" . (int)$nID . "'");
-         
-      }
-
-      foreach ($languages as $current_language) {
-        $language_id = $current_language['id'];
-        if (zen_not_null ($news_title[$language_id]) && zen_not_null ($news_content[$language_id])) {
-          
-          $sql_data_array = array ('news_title' => $news_title[$language_id],
-                                   'news_content' => $news_content[$language_id]);
-
-          if ($action == 'insert') {
-            $sql_data_array['box_news_id'] = $nID;
-            $sql_data_array['languages_id'] = $language_id;
-            zen_db_perform (TABLE_BOX_NEWS_CONTENT, $sql_data_array);
-            $change_type = NEWS_ARTICLE_CREATED;
-            
-          } else {
-            zen_db_perform (TABLE_BOX_NEWS_CONTENT, $sql_data_array, 'update', "box_news_id = " . (int)$nID . " AND languages_id = $language_id");
-            $change_type = NEWS_ARTICLE_UPDATED;
-            
-          }
+    case 'insert':
+    case 'update': 
+        $news_title = $_POST['news_title'];
+        $news_content = $_POST['news_content'];
+        $news_start_date = (($_POST['news_start_date'] == '') ? date ('Y-m-d') : zen_db_prepare_input ($_POST['news_start_date'])) . ' 00:00:00';
+        $news_end_date = ($_POST['news_end_date'] == '') ? 'NULL' : (zen_db_prepare_input ($_POST['news_end_date']) . ' 23:59:59');
+        if (isset ($_POST['nID'])) {
+            $nID = (int)$_POST['nID'];
         }
-      }
-      $messageStack->add_session (sprintf (SUCCESS_NEWS_ARTICLE_CHANGED, $change_type), 'success');
-      zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, "nID=$nID$page_link"));
-     
-    }
-    break;
-    
-  }
-  case 'deleteconfirm':  {
-    $nID = (int)$_GET['nID'];
-    $db->Execute ("DELETE FROM " . TABLE_BOX_NEWS . " WHERE box_news_id = $nID");
-    $db->Execute ("DELETE FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = $nID");
-    zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, (isset ($_GET['page']) ? ('page=' . $_GET['page']) : '')));
-    break;
-     
-  }
-  case 'status': {
-    $nID = (int)$_GET['nID'];
-    $news = $db->Execute ("SELECT news_status FROM " . TABLE_BOX_NEWS . " WHERE box_news_id = $nID LIMIT 1");
-    if (!$news->EOF) {
-      $news_status = ($news->fields['news_status'] == 0) ? 1 : 0;
-      $db->Execute ("UPDATE " . TABLE_BOX_NEWS . " SET news_status = $news_status, news_modified_date = now() WHERE box_news_id = $nID LIMIT 1");
+        
+        // -----
+        // For the news article to be saved, it must have both a title and content ** IN AT LEAST ONE OF THE STORE'S LANGUAGES **
+        //
+        $news_error = array ();
+        foreach ($languages as $current_language) {
+            $language_id = $current_language['id'];
+            if (empty ($news_title[$language_id]) || empty ($news_content[$language_id])) {
+                $news_error[$language_id] = true;
+            }
+        }
+        if (count ($news_error) != 0 && count ($news_error) == count ($languages)) {
+            $action = 'new';
+            $messageStack->add (ERROR_NEWS_TITLE_CONTENT, 'error');
+        } elseif ($news_end_date != 'NULL' && $news_start_date > $news_end_date) {
+            $action = 'new';
+            $messageStack->add (ERROR_NEWS_DATE_ISSUES, 'error');
+        } else {
+            $sql_data_array = array (
+                'news_start_date' => $news_start_date,
+                'news_end_date' => $news_end_date,
+            );
 
-    }
-    zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, "nID=$nID$page_link"));
-    break;
+            if ($action == 'insert') {
+                $sql_data_array['news_added_date'] = 'now()';
+                $sql_data_array['news_status'] = 0;
+                zen_db_perform (TABLE_BOX_NEWS, $sql_data_array);
+                $nID = zen_db_insert_id();
+            } else {
+                $sql_data_array['news_modified_date'] = 'now()';
+                zen_db_perform (TABLE_BOX_NEWS, $sql_data_array, 'update', "box_news_id = " . (int)$nID);
+            }
     
-  }
-  case 'set_editor': {
-    // Reset will be done by init_html_editor.php. Now we simply redirect to refresh page properly.
-    $params = '';
-    $separator = '';
-    if (isset ($_GET['nID'])) {
-      $params = 'nID=' . (int)$_GET['nID'];
-      $separator = '&';
-      
-    }
-    if (isset ($_GET['page'])) {
-      $params .= $separator . 'page=' . (int)$_GET['page'];
-      
-    }
-    zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, $params));
-    break;
-    
-  }
-  default: {
-    break;
-    
-  }
+            foreach ($languages as $current_language) {
+                $language_id = $current_language['id'];
+                if (zen_not_null ($news_title[$language_id]) && zen_not_null ($news_content[$language_id])) {
+                    $sql_data_array = array (
+                        'news_title' => $news_title[$language_id],
+                        'news_content' => $news_content[$language_id]
+                    );
+
+                    if ($action == 'insert') {
+                        $sql_data_array['box_news_id'] = $nID;
+                        $sql_data_array['languages_id'] = $language_id;
+                        zen_db_perform (TABLE_BOX_NEWS_CONTENT, $sql_data_array);
+                        $change_type = NEWS_ARTICLE_CREATED;
+                    } else {
+                        zen_db_perform (TABLE_BOX_NEWS_CONTENT, $sql_data_array, 'update', "box_news_id = " . (int)$nID . " AND languages_id = $language_id");
+                        $change_type = NEWS_ARTICLE_UPDATED; 
+                    }
+                }
+            }
+            $messageStack->add_session (sprintf (SUCCESS_NEWS_ARTICLE_CHANGED, $change_type), 'success');
+            zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, "nID=$nID$page_link"));
+        }
+        break;
+
+    case 'deleteconfirm':
+        $nID = (int)$_GET['nID'];
+        $db->Execute ("DELETE FROM " . TABLE_BOX_NEWS . " WHERE box_news_id = $nID");
+        $db->Execute ("DELETE FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = $nID");
+        zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, (isset ($_GET['page']) ? ('page=' . $_GET['page']) : '')));
+        break;
+        
+    case 'status':
+        $nID = (int)$_GET['nID'];
+        $news = $db->Execute ("SELECT news_status FROM " . TABLE_BOX_NEWS . " WHERE box_news_id = $nID LIMIT 1");
+        if (!$news->EOF) {
+            $news_status = ($news->fields['news_status'] == 0) ? 1 : 0;
+            $db->Execute ("UPDATE " . TABLE_BOX_NEWS . " SET news_status = $news_status, news_modified_date = now() WHERE box_news_id = $nID LIMIT 1");
+
+        }
+        zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, "nID=$nID$page_link"));
+        break;
+
+    case 'set_editor':
+        // Reset will be done by init_html_editor.php. Now we simply redirect to refresh page properly.
+        $params = '';
+        $separator = '';
+        if (isset ($_GET['nID'])) {
+            $params = 'nID=' . (int)$_GET['nID'];
+            $separator = '&';
+        }
+        if (isset ($_GET['page'])) {
+            $params .= $separator . 'page=' . (int)$_GET['page'];
+        }
+        zen_redirect (zen_href_link (FILENAME_NEWS_BOX_MANAGER, $params));
+        break;
+
+    default:
+        break;
 }
 ?>
 <!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -215,32 +197,32 @@ if ($editor_handler != '') {
         </tr>
 <?php
 if ($action == 'new') {
-  $form_action = 'insert';
-  $parameters = array ( 'news_title' => '',
-                        'news_content' => '',
-                        'news_added_date' => '',
-                        'news_modified_date' => '',
-                        'news_start_date' => '',
-                        'news_end_date' => '');
-  $nInfo = new objectInfo ($parameters);
-  if (isset ($_GET['nID']) || isset ($_POST['nID'])) {
-    $form_action = 'update';
-    $nID = (int)(isset ($_POST['nID'])) ? $_POST['nID'] : ((isset ($_GET['nID'])) ? $_GET['nID'] : 0);
-    $news = $db->Execute ("SELECT nc.news_title, nc.news_content, date_format(n.news_added_date, '%Y-%m-%d') as news_added_date, date_format(n.news_modified_date, '%Y-%m-%d') as news_modified_date,       date_format(n.news_start_date, '%Y-%m-%d') as news_start_date, date_format(n.news_end_date, '%Y-%m-%d') as news_end_date
+    $form_action = 'insert';
+    $parameters = array ( 
+        'news_title' => '',
+        'news_content' => '',
+        'news_added_date' => '',
+        'news_modified_date' => '',
+        'news_start_date' => '',
+        'news_end_date' => ''
+    );
+    $nInfo = new objectInfo ($parameters);
+    if (isset ($_GET['nID']) || isset ($_POST['nID'])) {
+        $form_action = 'update';
+        $nID = (int)(isset ($_POST['nID'])) ? $_POST['nID'] : ((isset ($_GET['nID'])) ? $_GET['nID'] : 0);
+        $news = $db->Execute ("SELECT nc.news_title, nc.news_content, date_format(n.news_added_date, '%Y-%m-%d') as news_added_date, date_format(n.news_modified_date, '%Y-%m-%d') as news_modified_date,       date_format(n.news_start_date, '%Y-%m-%d') as news_start_date, date_format(n.news_end_date, '%Y-%m-%d') as news_end_date
                              FROM " . TABLE_BOX_NEWS_CONTENT . " nc, " . TABLE_BOX_NEWS . " n 
                             WHERE n.box_news_id = $nID LIMIT 1");
-    if (!$news->EOF) {
-      $nInfo->objectInfo ($news->fields);
-      
+        if (!$news->EOF) {
+            $nInfo->objectInfo ($news->fields);
+        }
+    } else {             
+        $nInfo->objectInfo ($_POST);
     }
-  } elseif (isset ($_POST) && is_array ($_POST)) {              
-    $nInfo->objectInfo ($_POST);
-   
-  }
-  if ($nInfo->news_end_date == '0000-00-00') {
-    $nInfo->news_end_date = '';
+    if ($nInfo->news_end_date == '0000-00-00') {
+        $nInfo->news_end_date = '';
     
-  }
+    }
 ?>
         <tr>
           <td><?php echo TEXT_EDIT_INSERT_INFO; ?></td>
@@ -273,34 +255,34 @@ if ($action == 'new') {
               <td class="main"><?php echo zen_draw_separator ('pixel_trans.gif', '1', '35'); ?></td>
             </tr>
 <?php 
-  $languages = zen_get_languages();
-  $first_language = true;
-  foreach ($languages as $current_language){
+    $languages = zen_get_languages();
+    $first_language = true;
+    foreach ($languages as $current_language){
 ?>
             <tr>
               <td class="main">
 <?php
-    echo ($first_language) ? TEXT_NEWS_TITLE : '&nbsp;';
-    $first_language = false;
+        echo ($first_language) ? TEXT_NEWS_TITLE : '&nbsp;';
+        $first_language = false;
 ?>
               </td>
               <td class="main"><?php echo zen_image (DIR_WS_CATALOG_LANGUAGES . $current_language['directory'] . '/images/' . $current_language['image'], $current_language['name']) . '&nbsp;' . zen_draw_input_field ('news_title[' . $current_language['id'] . ']', (isset ($news_title[$current_language['id']]) ? stripslashes ($news_title[$current_language['id']]) : zen_get_news_title ($_GET['nID'], $current_language['id'])), zen_set_field_length (TABLE_PRODUCTS_DESCRIPTION, 'products_name')); ?></td>
             </tr>
 <?php
-  }
+    }
 ?>
             <tr>
               <td colspan="2"><?php echo zen_draw_separator ('pixel_trans.gif', '1', '35'); ?></td>
             </tr>
 <?php
-  $first_language = true;
-  foreach ($languages as $current_language){
+    $first_language = true;
+    foreach ($languages as $current_language){
 ?>
             <tr>
               <td class="main" valign="top">
 <?php
-    echo ($first_language) ? TEXT_NEWS_CONTENT : '&nbsp;';
-    $first_language = false;
+        echo ($first_language) ? TEXT_NEWS_CONTENT : '&nbsp;';
+        $first_language = false;
 ?>
               </td>
               <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -311,7 +293,7 @@ if ($action == 'new') {
               </table></td>
             </tr>
 <?php
-  }
+    }
 ?>
             <tr>
              <td><?php echo zen_draw_separator ('pixel_trans.gif', '1', '10'); ?></td>
@@ -329,8 +311,8 @@ if ($action == 'new') {
         </tr>
 <?php
 } elseif ($action == 'preview') {
-  $news_title = TEXT_NEWS_TITLE;
-  foreach ($languages as $current_language){
+    $news_title = TEXT_NEWS_TITLE;
+    foreach ($languages as $current_language){
 ?>
         <tr>
           <td class="main" colspan="2"><?php echo $news_title; ?></td>
@@ -344,19 +326,17 @@ if ($action == 'new') {
           <td class="main" style="width:<?php echo BOX_WIDTH_RIGHT; ?>;">&nbsp;</td>
         </tr>
 <?php
-    $news_title = '&nbsp;';
-    
-  }
+        $news_title = '&nbsp;';
+    }
 ?>
         <tr>
           <td class="main" colspan="3" align="right"><?php echo '<a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $_GET['nID']) . $page_link . '">' . zen_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></td>
         </tr>
 <?php
 } elseif ($action == 'confirm') {
-  $nID = (int)zen_db_prepare_input ($_GET['nID']);
-  $news = $db->Execute ("SELECT news_title, news_content FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = $nID LIMIT 1");
-  $nInfo = new objectInfo ($news->fields);
-
+    $nID = (int)zen_db_prepare_input ($_GET['nID']);
+    $news = $db->Execute ("SELECT news_title, news_content FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = $nID LIMIT 1");
+    $nInfo = new objectInfo ($news->fields);
 } else {
 ?>
         <tr>
@@ -380,23 +360,21 @@ if ($action == 'new') {
                   <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_ACTION; ?>&nbsp;</td>
                 </tr>
 <?php
-  $news_query_raw = "select n.box_news_id, nc.news_title, nc.news_content, n.news_added_date, n.news_modified_date, date_format(n.news_start_date, '%Y-%m-%d') as news_start_date, date_format(n.news_end_date, '%Y-%m-%d') as news_end_date, n.news_status from " . TABLE_BOX_NEWS . " n, " . TABLE_BOX_NEWS_CONTENT . " nc where n.box_news_id = nc.box_news_id and nc.languages_id = '" . (int)$_SESSION['languages_id'] . "' order by news_start_date DESC";
-  $news_split = new splitPageResults($_GET['page'], MAX_DISPLAY_SEARCH_RESULTS, $news_query_raw, $news_query_numrows);
-  $news = $db->Execute($news_query_raw);
-  while (!$news->EOF){
-    if((!isset($_GET['nID']) || (isset($_GET['nID']) && ($_GET['nID'] == $news->fields['box_news_id']))) &&   !isset($nInfo) && (substr($action, 0, 3) != 'new')){
-      $nInfo = new objectInfo($news->fields);
-    }
-    if (isset($nInfo) && is_object($nInfo) && ($news->fields['box_news_id'] == $nInfo->box_news_id) ){
-      echo '<tr id="defaultSelected" class="dataTableRowSelected" onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" onclick="document.location.href=\'' . zen_href_link(FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=preview') . '\'">' . "\n";
-     
-    } else {
-      echo '<tr class="dataTableRow" onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" onclick="document.location.href=\'' . zen_href_link(FILENAME_NEWS_BOX_MANAGER, '&nID=' . $news->fields['box_news_id'] . $page_link) . '\'">' . "\n";
-     
-    }
-    $start_date_class = ($news->fields['news_start_date'] <= date('Y-m-d')) ? 'green' : 'red';
-    $end_date_class = ($news->fields['news_end_date'] == '0000-00-00' || $news->fields['news_end_date'] >= date ('Y-m-d')) ? 'green' : 'red';
-    $news_end_date = ($news->fields['news_end_date'] == '0000-00-00') ? TEXT_NONE : zen_date_short ($news->fields['news_end_date']);
+    $news_query_raw = "select n.box_news_id, nc.news_title, nc.news_content, n.news_added_date, n.news_modified_date, date_format(n.news_start_date, '%Y-%m-%d') as news_start_date, date_format(n.news_end_date, '%Y-%m-%d') as news_end_date, n.news_status from " . TABLE_BOX_NEWS . " n, " . TABLE_BOX_NEWS_CONTENT . " nc where n.box_news_id = nc.box_news_id and nc.languages_id = '" . (int)$_SESSION['languages_id'] . "' order by news_start_date DESC";
+    $news_split = new splitPageResults($_GET['page'], MAX_DISPLAY_SEARCH_RESULTS, $news_query_raw, $news_query_numrows);
+    $news = $db->Execute($news_query_raw);
+    while (!$news->EOF){
+        if((!isset($_GET['nID']) || (isset($_GET['nID']) && ($_GET['nID'] == $news->fields['box_news_id']))) &&   !isset($nInfo) && (substr($action, 0, 3) != 'new')){
+            $nInfo = new objectInfo($news->fields);
+        }
+        if (isset($nInfo) && is_object($nInfo) && ($news->fields['box_news_id'] == $nInfo->box_news_id) ){
+            echo '<tr id="defaultSelected" class="dataTableRowSelected" onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" onclick="document.location.href=\'' . zen_href_link(FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=preview') . '\'">' . "\n";
+        } else {
+            echo '<tr class="dataTableRow" onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" onclick="document.location.href=\'' . zen_href_link(FILENAME_NEWS_BOX_MANAGER, '&nID=' . $news->fields['box_news_id'] . $page_link) . '\'">' . "\n";
+        }
+        $start_date_class = ($news->fields['news_start_date'] <= date('Y-m-d')) ? 'green' : 'red';
+        $end_date_class = ($news->fields['news_end_date'] == '0000-00-00' || $news->fields['news_end_date'] >= date ('Y-m-d')) ? 'green' : 'red';
+        $news_end_date = ($news->fields['news_end_date'] == '0000-00-00') ? TEXT_NONE : zen_date_short ($news->fields['news_end_date']);
 ?>
                   <td class="dataTableContent"><?php echo '<a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $news->fields['box_news_id'] . '&action=preview' . $page_link) . '">' . zen_image (DIR_WS_ICONS . 'preview.gif', ICON_PREVIEW) . '</a>&nbsp;' . $news->fields['news_title']; ?></td>
                   <td class="dataTableContent" align="right"><span class="<?php echo $start_date_class; ?>"><?php echo zen_date_short ($news->fields['news_start_date']); ?></span></td>
@@ -404,16 +382,14 @@ if ($action == 'new') {
                   <td class="dateTableContent" align="right"><?php echo (($news->fields['news_modified_date'] == NULL) ? $news->fields['news_date_added'] : $news->fields['news_modified_date']); ?></td>
                   <td class="dataTableContent" align="center">
 <?php
-    echo zen_draw_form ('setstatus', FILENAME_NEWS_BOX_MANAGER, 'action=status&nID=' . $news->fields['box_news_id'] . $page_link);
-    if ($news->fields['news_status'] == 0) {
-      $icon_image = 'icon_red_on.gif';
-      $icon_title = IMAGE_ICON_STATUS_OFF;
-      
-    } else {
-      $icon_image = 'icon_green_on.gif';
-      $icon_title = IMAGE_ICON_STATUS_ON;
-      
-    }
+        echo zen_draw_form ('setstatus', FILENAME_NEWS_BOX_MANAGER, 'action=status&nID=' . $news->fields['box_news_id'] . $page_link);
+        if ($news->fields['news_status'] == 0) {
+            $icon_image = 'icon_red_on.gif';
+            $icon_title = IMAGE_ICON_STATUS_OFF;
+        } else {
+            $icon_image = 'icon_green_on.gif';
+            $icon_title = IMAGE_ICON_STATUS_ON;
+        }
 ?>
                       <input type="image" src="<?php echo DIR_WS_IMAGES . $icon_image; ?>" alt="<?php echo $icon_title; ?>" />
                     </form>
@@ -421,9 +397,8 @@ if ($action == 'new') {
                   <td class="dataTableContent" align="right"><?php if (isset ($nInfo) && is_object ($nInfo) && ($news->fields['box_news_id'] == $nInfo->box_news_id) ) { echo zen_image(DIR_WS_IMAGES . 'icon_arrow_right.gif', ''); } else { echo '<a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $news->fields['box_news_id']) . $page_link . '">' . zen_image (DIR_WS_IMAGES . 'icon_info.gif', IMAGE_ICON_INFO) . '</a>'; } ?>&nbsp;</td>
                 </tr>
 <?php
-    $news->MoveNext();
-    
-  }
+        $news->MoveNext();
+    }
 ?>
                 <tr>
                   <td colspan="6"><table border="0" width="100%" cellspacing="0" cellpadding="2">
@@ -439,39 +414,38 @@ if ($action == 'new') {
                
               </table></td>
 <?php
-  $heading = array();
-  $contents = array();
-  switch ($action){
-    case 'delete': {
-      $heading[] = array('text' => '<b>' . $nInfo->news_title . '</b>');
-      $contents = array('form' => zen_draw_form('news', FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=deleteconfirm'));
-      $contents[] = array('text' => TEXT_NEWS_DELETE_INFO);
-      $contents[] = array('text' => '<br><b>' . $nInfo->news_title . '</b>');
-      $contents[] = array('align' => 'center', 'text' => '<br>' . zen_image_submit('button_delete.gif', IMAGE_DELETE) . ' <a href="' . zen_href_link(FILENAME_NEWS_BOX_MANAGER, 'nID=' . $_GET['nID'] . $page_link) . '">' . zen_image_button ('button_cancel.gif', IMAGE_CANCEL) . '</a>');
-      break;
-    }
-    default: {
-      if (is_object ($nInfo)) {
-        $heading[] = array('text' => '<b>' . $nInfo->news_title . '</b>');
-        $contents[] = array('align' => 'center', 'text' => '<a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=new') . '">' . zen_image_button('button_edit.gif', IMAGE_EDIT) . '</a> <a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=delete') . '">' . zen_image_button('button_delete.gif', IMAGE_DELETE) . '</a>');
-        $contents[] = array('text' => '<br>' . TEXT_NEWS_DATE_ADDED . ' ' . $nInfo->news_added_date);
-        if ($nInfo->news_modified_date != NULL) {
-          $contents[] = array('text' => TEXT_NEWS_DATE_MODIFIED . ' ' . $nInfo->news_modified_date);
+    $heading = array();
+    $contents = array();
+    switch ($action){
+        case 'delete':
+            $heading[] = array('text' => '<b>' . $nInfo->news_title . '</b>');
+            $contents = array('form' => zen_draw_form('news', FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=deleteconfirm'));
+            $contents[] = array('text' => TEXT_NEWS_DELETE_INFO);
+            $contents[] = array('text' => '<br><b>' . $nInfo->news_title . '</b>');
+            $contents[] = array('align' => 'center', 'text' => '<br>' . zen_image_submit('button_delete.gif', IMAGE_DELETE) . ' <a href="' . zen_href_link(FILENAME_NEWS_BOX_MANAGER, 'nID=' . $_GET['nID'] . $page_link) . '">' . zen_image_button ('button_cancel.gif', IMAGE_CANCEL) . '</a>');
+            break;
+
+        default:
+            if (is_object ($nInfo)) {
+                $heading[] = array('text' => '<b>' . $nInfo->news_title . '</b>');
+                $contents[] = array('align' => 'center', 'text' => '<a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=new') . '">' . zen_image_button('button_edit.gif', IMAGE_EDIT) . '</a> <a href="' . zen_href_link (FILENAME_NEWS_BOX_MANAGER, 'nID=' . $nInfo->box_news_id . $page_link . '&action=delete') . '">' . zen_image_button('button_delete.gif', IMAGE_DELETE) . '</a>');
+                $contents[] = array('text' => '<br>' . TEXT_NEWS_DATE_ADDED . ' ' . $nInfo->news_added_date);
+                if ($nInfo->news_modified_date != NULL) {
+                    $contents[] = array('text' => TEXT_NEWS_DATE_MODIFIED . ' ' . $nInfo->news_modified_date);
           
-        }
-      }
-      break;
+                }
+            }
+            break;
     }
-  }
-  if (zen_not_null ($heading) && zen_not_null ($contents)) {
-    $box = new box;
+    if (zen_not_null ($heading) && zen_not_null ($contents)) {
+        $box = new box;
 ?>
               <td width="25%" valign="top"><?php echo $box->infoBox ($heading, $contents); ?></td>
             </tr>
           </table></td>
         </tr>
 <?php
-  }
+    }
 }
 ?>
       </table></td>

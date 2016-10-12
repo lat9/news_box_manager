@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>News Box Manager for Zen Cart&reg; v1.5.1 through v1.5.4</title>
+<title>News Box Manager for Zen Cart&reg; v1.5.1 through v1.5.5a</title>
 
 <style type="text/css">
 <!--
@@ -15,15 +15,17 @@ h1 { font-size: 20px; }
 h2 { font-size: 16px; }
 ol li, ul li { margin: 5px 0; }
 .corefile, .impt { color: red; }
-.template { color: blue; }
+.template { color: green; }
 img { margin-left: 20px; max-width: 95%; }
+.smaller { font-size: smaller; }
+.added { color: blue; }
 -->
 </style>
 </head>
 
 <body>
-<h1>News Box Manager &mdash; for Zen Cart v1.5.1 through v1.5.4</h1>
-<h3>Version 2.1.0</h3>
+<h1>News Box Manager &mdash; for Zen Cart v1.5.1 through v1.5.5a</h1>
+<h3>Version 2.1.1</h3>
 <p>Current Support Thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?216422" target="_blank">News Box Manager v2.0.0 [Support Thread]</a></p>
 <p>This plugin represents a restructuring of the <a href="http://www.zen-cart.com/downloads.php?do=file&id=147" target="_blank">News Box Manager, v1-5</a> for Zen Cart v1.3.x, enabling the plugin to support current Zen Cart and PHP versions.</p>
 
@@ -61,6 +63,7 @@ img { margin-left: 20px; max-width: 95%; }
     <li>/YOUR_ADMIN/news_box_manager.php</li>
     <li>/YOUR_ADMIN/includes/auto_loaders/config.news_box_manager.php</li>
     <li>/YOUR_ADMIN/includes/extra_datafiles/news_box_manager_file_database_names.php</li>
+    <li>/YOUR_ADMIN/includes/extra_datafiles/news_box_manager_sanitization.php <span class="smaller">(Added in v2.1.1)</span></li>
     <li>/YOUR_ADMIN/includes/init_includes/init_news_box_manager_admin.php</li>
     <li>/YOUR_ADMIN/includes/languages/english/news_box_manager.php</li>
     <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/news_box_manager_menu_name.php</li>
@@ -97,8 +100,12 @@ img { margin-left: 20px; max-width: 95%; }
 <hr />
 <h2>Version History</h2>
 <ul>
-  <li>v2.0.0, 2015-03-03:<ul>
-    <li>Initial release for Zen Cart v1.5.1 through v1.5.4.</li>
+  <li>v2.1.1, 2016-10-12:<ul>
+    <li>BUGFIX: Additional &quot;sanitization&quot; needed for Zen Cart 1.5.5 and later.</li>
+    <li>The following files were changed/<span class="added">added</span>:<ol>
+      <li>/YOUR_ADMIN/news_box_manager.php</li>
+      <li><span class="added">/YOUR_ADMIN/includes/extra_datafiles/news_box_manager_sanitization.php</span></li>
+    </ol></li>
   </ul></li>
   <li>v2.1.0, 2015-03-31:<ul>
     <li>BUGFIX: Correct messaging and article-replication issues within the admin tool after an error is detected during an article's save action.</li>
@@ -113,6 +120,9 @@ img { margin-left: 20px; max-width: 95%; }
       <li>/YOUR_ADMIN/news_box_manager.php</li>
       <li>/YOUR_ADMIN/includes/init_includes/init_news_box_manager_admin.php</li>
     </ol></li>
+  </ul></li>
+  <li>v2.0.0, 2015-03-03:<ul>
+    <li>Initial release for Zen Cart v1.5.1 through v1.5.4.</li>
   </ul></li>
 </ul>
 
