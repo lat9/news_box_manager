@@ -14,7 +14,7 @@ if (empty($_SESSION['admin_id'])) {
     return;
 }
 
-define('NEWS_BOX_CURRENT_VERSION', '2.2.0-beta1');
+define('NEWS_BOX_CURRENT_VERSION', '2.2.0');
 define('NEWS_BOX_CURRENT_UPDATE_DATE', '2018-09-17');
 define('NEWS_BOX_CURRENT_VERSION_DATE', NEWS_BOX_CURRENT_VERSION . ' (' . NEWS_BOX_CURRENT_UPDATE_DATE . ')');
 
