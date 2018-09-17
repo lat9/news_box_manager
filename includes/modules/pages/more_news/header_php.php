@@ -15,8 +15,13 @@ $breadcrumb->add(NAVBAR_TITLE);
 
 $news_id = (isset($_GET['news_id'])) ? (int)$_GET['news_id'] : 0;
 $languages_id = (int)$_SESSION['languages_id'];
+
+// -----
+// NOTE:  The results of this query are also used by the plugin's auto-loaded observer
+// that manages a news item's metatags!
+//
 $news_box_query = $db->Execute(
-    "SELECT nc.news_title, nc.news_content, n.news_start_date, n.news_end_date
+    "SELECT *
        FROM " . TABLE_BOX_NEWS_CONTENT . " nc
             INNER JOIN " . TABLE_BOX_NEWS . " n 
                 ON nc.box_news_id = n.box_news_id

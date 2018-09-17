@@ -8,31 +8,54 @@
 // | Dedicated to Memory of Amelita "Emmy" Abordo Gelarderes              |
 // +----------------------------------------------------------------------+
 //
-function zen_get_news_title ($box_news_id, $language_id = '')
+require 'includes/application_top.php';
+
+function zen_get_news_title($box_news_id, $language_id = '')
 {
-    global $db;
     if ($language_id == '') {
         $language_id = $_SESSION['languages_id'];
     }
-    $news = $db->Execute ("SELECT news_title FROM " . TABLE_BOX_NEWS_CONTENT . "  WHERE box_news_id = " . (int)$box_news_id . " AND languages_id = " . (int)$language_id . " LIMIT 1");
-  
+    $news = $GLOBALS['db']->Execute(
+        "SELECT *
+           FROM " . TABLE_BOX_NEWS_CONTENT . "  
+          WHERE box_news_id = " . (int)$box_news_id . " 
+            AND languages_id = " . (int)$language_id . " 
+          LIMIT 1"
+    );
     return ($news->EOF) ? '' : $news->fields['news_title'];
 }
 
-function zen_get_news_content ($box_news_id, $language_id = '')
+function zen_get_news_content($box_news_id, $language_id = '')
 {
-    global $db;
     if ($language_id == '') {
         $language_id = $_SESSION['languages_id'];
     }
-    $news = $db->Execute ("SELECT news_content FROM " . TABLE_BOX_NEWS_CONTENT . " WHERE box_news_id = " . (int)$box_news_id . " AND languages_id = " . (int)$language_id . " LIMIT 1");
-  
+    $news = $GLOBALS['db']->Execute(
+        "SELECT *
+           FROM " . TABLE_BOX_NEWS_CONTENT . " 
+          WHERE box_news_id = " . (int)$box_news_id . " 
+            AND languages_id = " . (int)$language_id . " 
+          LIMIT 1"
+    );
     return ($news->EOF) ? '' : $news->fields['news_content'];
 }
 
-require('includes/application_top.php');
+function zen_get_news_info($box_news_id, $language_id = '')
+{
+    if ($language_id == '') {
+        $language_id = $_SESSION['languages_id'];
+    }
+    $news = $GLOBALS['db']->Execute(
+        "SELECT *
+           FROM " . TABLE_BOX_NEWS_CONTENT . " 
+          WHERE box_news_id = " . (int)$box_news_id . " 
+            AND languages_id = " . (int)$language_id . " 
+          LIMIT 1"
+    );
+    return ($news->EOF) ? array() : $news->fields; 
+}
 
-$languages = zen_get_languages (); 
+$languages = zen_get_languages(); 
 
 $action = (isset($_GET['action']) ? $_GET['action'] : '');
 $page_link = (isset($_GET['page'])) ? ('&page=' . (int)$_GET['page']) : '';
@@ -43,6 +66,9 @@ switch ($action) {
         $news_content = $_POST['news_content'];
         $news_start_date = (($_POST['news_start_date'] == '') ? date ('Y-m-d') : zen_db_prepare_input($_POST['news_start_date'])) . ' 00:00:00';
         $news_end_date = ($_POST['news_end_date'] == '') ? 'null' : (zen_db_prepare_input($_POST['news_end_date']) . ' 23:59:59');
+        $news_metatags_title = $_POST['news_metatags_title'];
+        $news_metatags_keywords = $_POST['news_metatags_keywords'];
+        $news_metatags_description = $_POST['news_metatags_description'];
         if (isset($_POST['nID'])) {
             $nID = (int)$_POST['nID'];
         }
@@ -84,7 +110,10 @@ switch ($action) {
                 if (zen_not_null($news_title[$language_id]) && zen_not_null($news_content[$language_id])) {
                     $sql_data_array = array (
                         'news_title' => $news_title[$language_id],
-                        'news_content' => $news_content[$language_id]
+                        'news_content' => $news_content[$language_id],
+                        'news_metatags_title' => $news_metatags_title[$language_id],
+                        'news_metatags_keywords' => (empty($news_metatags_keywords[$language_id])) ? 'null' : $news_metatags_keywords[$language_id],
+                        'news_metatags_description' => (empty($news_metatags_description[$language_id])) ? 'null' : $news_metatags_description[$language_id]
                     );
 
                     if ($action == 'insert') {
@@ -149,6 +178,7 @@ switch ($action) {
 <!--
 .green { color: green; }
 .red { color: red; }
+.meta-tags { text-align: center; padding: 0.5em 0; }
 -->
 </style>
 <script src="includes/menu.js"></script>
@@ -254,60 +284,90 @@ if ($action == 'new') {
                                 <td class="main"><?php echo zen_draw_separator('pixel_trans.gif', '24', '15') . '&nbsp;'; ?><script>dateNewsEnd.writeControl(); dateNewsEnd.dateFormat="yyyy-MM-dd";</script></td>
                             </tr>
                             <tr>
-                                <td colspan="2"><?php echo zen_draw_separator('pixel_trans.gif', '1', '35'); ?></td>
+                                <td colspan="2"><?php echo zen_draw_separator('pixel_trans.gif', '1', '15'); ?></td>
                             </tr>
 <?php 
     $languages = zen_get_languages();
     $first_language = true;
     $title_max_length = zen_set_field_length(TABLE_BOX_NEWS_CONTENT, 'news_title');
+    $metatags_title_max_length = zen_set_field_length(TABLE_BOX_NEWS_CONTENT, 'news_metatags_title');
     foreach ($languages as $current_language){
+        $lang_dir = $current_language['directory'];
+        $lang_image_file = $current_language['image'];
+        $lang_name = $current_language['name'];
+        $lang_image = zen_image(DIR_WS_CATALOG_LANGUAGES . "$lang_dir/images/$lang_image_file", $lang_name);
+        
+        $lang_id = $current_language['id'];
+        $lang_news_title = (isset($news_title[$lang_id])) ? stripslashes($news_title[$lang_id]) : zen_get_news_title($_GET['nID'], $lang_id);
+        $lang_news_content = (isset($news_content[$lang_id]) ? stripslashes($news_content[$lang_id]) : zen_get_news_content($_GET['nID'], $lang_id));
+        
+        $lang_news = zen_get_news_info($_GET['nID'], $lang_id);
+        $lang_metatags_title = (isset($_POST['news_metatags_title'][$lang_id])) ? stripslashes($_POST['news_metatags_title'][$lang_id]) : $lang_news['news_metatags_title'];
+        $lang_metatags_description = (isset($_POST['news_metatags_description'][$lang_id])) ? stripslashes($_POST['news_metatags_description'][$lang_id]) : $lang_news['news_metatags_description'];
+        $lang_metatags_keywords = (isset($_POST['news_metatags_keywords'][$lang_id])) ? stripslashes($_POST['news_metatags_keywords'][$lang_id]) : $lang_news['news_metatags_keywords'];
+        
+        if ($first_language) {
+            $first_language = false;
+        } else {
 ?>
                             <tr>
-                                <td class="main">
-<?php
-        echo ($first_language) ? TEXT_NEWS_TITLE : '&nbsp;';
-        $first_language = false;
-        $lang_dir = $current_language['directory'];
-        $lang_image = $current_language['image'];
-        $lang_name = $current_language['name'];
-        $lang_id = $current_language['id'];
-        $lang_title = (isset($news_title[$lang_id])) ? stripslashes($news_title[$lang_id]) : zen_get_news_title($_GET['nID'], $lang_id);
-?>
-                                </td>
-                                <td class="main"><?php echo zen_image(DIR_WS_CATALOG_LANGUAGES . "$lang_dir/images/$lang_image", $lang_name) . '&nbsp;' . zen_draw_input_field("news_title[$lang_id]", $lang_title, $title_max_length); ?></td>
+                                <td class="main" colspan="2"><?php echo zen_black_line(); ?></td>
                             </tr>
 <?php
-    }
+        }
 ?>
                             <tr>
-                                <td colspan="2"><?php echo zen_draw_separator('pixel_trans.gif', '1', '35'); ?></td>
+                                <td class="main"><?php echo TEXT_NEWS_TITLE; ?></td>
+                                <td class="main"><?php echo $lang_image . '&nbsp;&nbsp;' . zen_draw_input_field("news_title[$lang_id]", $lang_news_title, $title_max_length); ?></td>
                             </tr>
-<?php
-    $first_language = true;
-    foreach ($languages as $current_language){
-?>
+
                             <tr>
-                                <td class="main" valign="top">
-<?php
-        echo ($first_language) ? TEXT_NEWS_CONTENT : '&nbsp;';
-        $first_language = false;
-        $lang_dir = $current_language['directory'];
-        $lang_image = $current_language['image'];
-        $lang_name = $current_language['name'];
-        $lang_id = $current_language['id'];
-        $lang_title = (isset($news_title[$lang_id])) ? stripslashes($news_title[$lang_id]) : zen_get_news_title($_GET['nID'], $lang_id);
-?>
-                                </td>
+                                <td colspan="2"><?php echo zen_draw_separator('pixel_trans.gif', '1', '15'); ?></td>
+                            </tr>
+
+                            <tr>
+                                <td class="main" valign="top"><?php echo TEXT_NEWS_CONTENT; ?></td>
                                 <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
                                     <tr>
-                                        <td class="main" valign="top"><?php echo zen_image(DIR_WS_CATALOG_LANGUAGES . "$lang_dir/images/$lang_image", $lang_name); ?>&nbsp;</td>
-                                        <td class="main"><?php echo zen_draw_textarea_field("news_content[$lang_id]", 'soft', '100%', '20', (isset($news_content[$lang_id]) ? stripslashes($news_content[$lang_id]) : zen_get_news_content($_GET['nID'], $lang_id)), 'id="ta' . $lang_id . '"'); ?></td>
+                                        <td class="main" valign="top"><?php echo $lang_image; ?></td>
+                                        <td class="main"><?php echo zen_draw_textarea_field("news_content[$lang_id]", 'soft', '100%', '20', $lang_news_content, 'id="ta' . $lang_id . '"'); ?></td>
+                                    </tr>
+                                </table></td>
+                            </tr>
+                            
+                            <tr>
+                                <td colspan="2" class="meta-tags"><?php echo TEXT_NEWS_METATAGS_DISCLAIMER; ?></td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="main"><?php echo TEXT_NEWS_METATAGS_TITLE; ?></td>
+                                <td class="main"><?php echo $lang_image . '&nbsp;&nbsp;' . zen_draw_input_field("news_metatags_title[$lang_id]", $lang_metatags_title, $metatags_title_max_length); ?></td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="main"><?php echo TEXT_NEWS_METATAGS_KEYWORDS; ?></td>
+                                <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td class="main" valign="top"><?php echo $lang_image; ?></td>
+                                        <td class="main"><?php echo zen_draw_textarea_field("news_metatags_keywords[$lang_id]", 'soft', '100%', '5', $lang_metatags_keywords, 'class="noEditor"'); ?></td>
+                                    </tr>
+                                </table></td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="main"><?php echo TEXT_NEWS_METATAGS_DESCRIPTION; ?></td>
+                                <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td class="main" valign="top"><?php echo $lang_image; ?></td>
+                                        <td class="main"><?php echo zen_draw_textarea_field("news_metatags_description[$lang_id]", 'soft', '100%', '5', $lang_metatags_description, 'class="noEditor"'); ?></td>
                                     </tr>
                                 </table></td>
                             </tr>
 <?php
     }
-    $the_button = ($form_action == 'insert') ? zen_image_submit('button_save.gif', IMAGE_SAVE) : zen_image_submit('button_update.gif', IMAGE_UPDATE);
+    $submit_button = ($form_action == 'insert') ? zen_image_submit('button_save.gif', IMAGE_SAVE) : zen_image_submit('button_update.gif', IMAGE_UPDATE);
+    $cancel_link = zen_href_link(FILENAME_NEWS_BOX_MANAGER, (isset($_GET['page']) ? 'page=' . (int)$_GET['page'] . '&' : '') . (isset($_GET['nID']) ? 'nID=' . (int)$_GET['nID'] : ''));
+    $cancel_button = zen_image_button('button_cancel.gif', IMAGE_CANCEL);
 ?>
                             <tr>
                                 <td><?php echo zen_draw_separator ('pixel_trans.gif', '1', '10'); ?></td>
@@ -316,7 +376,7 @@ if ($action == 'new') {
                             <tr>
                                 <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
                                     <tr>
-                                        <td class="main" align="right"><?php echo $the_button . '&nbsp;&nbsp;<a href="' . zen_href_link(FILENAME_NEWS_BOX_MANAGER, (isset($_GET['page']) ? 'page=' . $_GET['page'] . '&' : '') . (isset($_GET['nID']) ? 'nID=' . (int)$_GET['nID'] : '')) . '">' . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . '</a>'; ?></td>
+                                        <td class="main" align="right"><?php echo $submit_button; ?>&nbsp;&nbsp;<a href="<?php echo $cancel_link; ?>"><?php echo $cancel_button; ?></a></td>
                                     </tr>
                                 </table></td>
                             </tr>

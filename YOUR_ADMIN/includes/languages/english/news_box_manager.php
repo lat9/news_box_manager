@@ -1,7 +1,7 @@
 <?php
 // -----
 // Part of the News Box Manager plugin, re-structured for Zen Cart v1.5.1 and later by lat9.
-// Copyright (C) 2015, Vinos de Frutas Tropicales
+// Copyright (C) 2015-2018, Vinos de Frutas Tropicales
 //
 // +----------------------------------------------------------------------+
 // | Do Not Remove: Coded for Zen-Cart by geeks4u.com                     |
@@ -20,6 +20,11 @@ define('TABLE_HEADING_ACTION', 'Action');
 define('TEXT_NEWS_TITLE', 'News Title:');
 define('TEXT_NEWS_CONTENT', 'News Content:');
 define('TEXT__NEWS_CONTENT', 'News Content:');
+define('TEXT_NEWS_METATAGS_TITLE', 'Metatags Title:');
+define('TEXT_NEWS_METATAGS_DESCRIPTION', 'Metatags Description:');
+define('TEXT_NEWS_METATAGS_KEYWORDS', 'Metatags Keywords:');
+
+define('TEXT_NEWS_METATAGS_DISCLAIMER', '<b>Note:</b> News articles\' metatags are available for installations using Zen Cart 1.5.5 or later!');
 
 define('TEXT_NEWS_DATE_ADDED', 'Date Added:');
 define('TEXT_NEWS_DATE_MODIFIED', 'Date Modified:');

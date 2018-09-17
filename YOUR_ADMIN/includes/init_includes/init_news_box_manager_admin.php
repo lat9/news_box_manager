@@ -14,8 +14,8 @@ if (empty($_SESSION['admin_id'])) {
     return;
 }
 
-define('NEWS_BOX_CURRENT_VERSION', '2.1.1-beta1');
-define('NEWS_BOX_CURRENT_UPDATE_DATE', '2018-09-16');
+define('NEWS_BOX_CURRENT_VERSION', '2.2.0-beta1');
+define('NEWS_BOX_CURRENT_UPDATE_DATE', '2018-09-17');
 define('NEWS_BOX_CURRENT_VERSION_DATE', NEWS_BOX_CURRENT_VERSION . ' (' . NEWS_BOX_CURRENT_UPDATE_DATE . ')');
 
 function init_nbm_next_sort ($menu_key) 
@@ -104,7 +104,7 @@ if (NEWS_BOX_MODULE_VERSION != NEWS_BOX_CURRENT_VERSION_DATE) {
     } else {
         $version_info = trim(explode('(', NEWS_BOX_MODULE_VERSION));
         $nb_current_version = $version_info[0];
-        if (version_compare($nb_current_version, '2.1.1', '<')) {
+        if (version_compare($nb_current_version, '2.2.0', '<')) {
             $db->Execute(
                 "ALTER TABLE " . TABLE_BOX_NEWS . "
                 MODIFY `news_added_date` datetime DEFAULT '0001-01-01 00:00:00'"
@@ -123,6 +123,14 @@ if (NEWS_BOX_MODULE_VERSION != NEWS_BOX_CURRENT_VERSION_DATE) {
                 $db->Execute(
                     "ALTER TABLE " . TABLE_BOX_NEWS . "
                        ADD COLUMN `news_content_type` tinyint(1) NOT NULL default 0"
+                );
+            }
+            if (!$sniffer->field_exists(TABLE_BOX_NEWS_CONTENT, 'news_metatags_title')) {
+                $db->Execute(
+                    "ALTER TABLE " . TABLE_BOX_NEWS_CONTENT . "
+                       ADD COLUMN `news_metatags_title` varchar(255) NOT NULL default '',
+                       ADD COLUMN `news_metatags_keywords` text,
+                       ADD COLUMN `news_metatags_description` text"
                 );
             }
             // -----
