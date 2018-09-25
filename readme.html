@@ -26,7 +26,7 @@ img { margin-left: 20px; max-width: 95%; }
 
 <body>
 <h1>News Box Manager &mdash; for Zen Cart v1.5.1 through v1.5.5f</h1>
-<h3>Version 2.2.0</h3>
+<h3>Version 2.2.1</h3>
 <p>Current Support Thread at Zen Cart Forums: <a href="https://www.zen-cart.com/showthread.php?216422" target="_blank">News Box Manager v2.0.0 [Support Thread]</a></p>
 <p>GitHub repository: <a href="https://github.com/lat9/news_box_manager" target="_blank">https://github.com/lat9/news_box_manager</a></p>
 <p>This plugin represents a restructuring of the <a href="https://www.zen-cart.com/downloads.php?do=file&id=147" target="_blank">News Box Manager, v1-5</a> for Zen Cart v1.3.x, enabling the plugin to support current Zen Cart and PHP versions.</p>
@@ -102,6 +102,12 @@ img { margin-left: 20px; max-width: 95%; }
 
 <h2>Version History</h2>
 <ul>
+  <li>v2.2.1, 2018-09-25:<ul>
+    <li>BUGFIX: Correct initial-install issue introduced in v2.2.0 (missing meta-tags fields).</li>
+    <li>The following files were changed:<ol>
+      <li>/YOUR_ADMIN/init_includes/init_news_box_manager_admin.php</li>
+    </ol></li>
+  </ul></li>
   <li>v2.2.0, 2018-09-17:<ul>
     <li>BUGFIX: Dates stored as <code>0000-00-00</code>; need correction for more recent versions of MySQL.</li>
     <li>CHANGE: Updates to include article-specific metatag definitions.</li>

@@ -14,8 +14,8 @@ if (empty($_SESSION['admin_id'])) {
     return;
 }
 
-define('NEWS_BOX_CURRENT_VERSION', '2.2.0');
-define('NEWS_BOX_CURRENT_UPDATE_DATE', '2018-09-17');
+define('NEWS_BOX_CURRENT_VERSION', '2.2.1-beta1');
+define('NEWS_BOX_CURRENT_UPDATE_DATE', '2018-09-25');
 define('NEWS_BOX_CURRENT_VERSION_DATE', NEWS_BOX_CURRENT_VERSION . ' (' . NEWS_BOX_CURRENT_UPDATE_DATE . ')');
 
 function init_nbm_next_sort ($menu_key) 
@@ -78,6 +78,9 @@ if (!defined('NEWS_BOX_MODULE_VERSION')) {
         `languages_id` int(11) NOT NULL default '1',
         `news_title` varchar(255) NOT NULL default '',
         `news_content` text NOT NULL,
+        `news_metatags_title` varchar(255) NOT NULL default '',
+        `news_metatags_keywords` text,
+        `news_metatags_description` text,
         PRIMARY KEY  (`languages_id`,`box_news_id`)
     ) ENGINE=MyISAM DEFAULT CHARACTER SET " . DB_CHARSET;
     $db->Execute($sql);
