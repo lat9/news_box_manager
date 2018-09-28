@@ -37,8 +37,8 @@ if ($news_box_query->EOF) {
     $news_content = '';
     $start_date = false;
 } else {
-    $news_title = nl2br($news_box_query->fields['news_title']);
-    $news_content = nl2br($news_box_query->fields['news_content']);
+    $news_title = $news_box_query->fields['news_title'];
+    $news_content = $news_box_query->fields['news_content'];
     $start_date = (NEWS_BOX_DATE_FORMAT == 'short') ? zen_date_short($news_box_query->fields['news_start_date']) : zen_date_long($news_box_query->fields['news_start_date']);
     if ($news_box_query->fields['news_end_date'] != '0001-01-01 00:00:00') {
         $end_date = (NEWS_BOX_DATE_FORMAT == 'short') ? zen_date_short($news_box_query->fields['news_end_date']) : zen_date_long($news_box_query->fields['news_end_date']);
