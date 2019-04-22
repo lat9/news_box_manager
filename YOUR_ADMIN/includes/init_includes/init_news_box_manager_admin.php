@@ -1,7 +1,7 @@
 <?php
 // -----
 // Part of the News Box Manager plugin, re-structured for Zen Cart v1.5.1 and later by lat9.
-// Copyright (C) 2015-2018, Vinos de Frutas Tropicales
+// Copyright (C) 2015-2019, Vinos de Frutas Tropicales
 //
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
@@ -14,8 +14,8 @@ if (empty($_SESSION['admin_id'])) {
     return;
 }
 
-define('NEWS_BOX_CURRENT_VERSION', '2.2.1-beta2');
-define('NEWS_BOX_CURRENT_UPDATE_DATE', '2018-09-28');
+define('NEWS_BOX_CURRENT_VERSION', '2.2.1');
+define('NEWS_BOX_CURRENT_UPDATE_DATE', '2019-04-22');
 define('NEWS_BOX_CURRENT_VERSION_DATE', NEWS_BOX_CURRENT_VERSION . ' (' . NEWS_BOX_CURRENT_UPDATE_DATE . ')');
 
 function init_nbm_next_sort ($menu_key) 
@@ -107,7 +107,7 @@ if (NEWS_BOX_MODULE_VERSION != NEWS_BOX_CURRENT_VERSION_DATE) {
     } else {
         $version_info = trim(explode('(', NEWS_BOX_MODULE_VERSION));
         $nb_current_version = $version_info[0];
-        if (version_compare($nb_current_version, '2.2.0', '<')) {
+        if (version_compare($nb_current_version, '2.2.1', '<')) {
             $db->Execute(
                 "ALTER TABLE " . TABLE_BOX_NEWS . "
                 MODIFY `news_added_date` datetime DEFAULT '0001-01-01 00:00:00'"
@@ -137,7 +137,7 @@ if (NEWS_BOX_MODULE_VERSION != NEWS_BOX_CURRENT_VERSION_DATE) {
                 );
             }
             // -----
-            // v2.1.1 moves the tool from the 'Localization' menu to the 'Tools' ...
+            // v2.2.1 moves the tool from the 'Localization' menu to the 'Tools' ...
             //
             zen_deregister_admin_pages('localizationNewsBox');
             if (!zen_page_key_exists('toolsNewsBox')) {
